@@ -10,6 +10,7 @@ cmake_minimum_required(VERSION 3.0)
 add_executable(formula_parser)
 target_sources(formula_parser PRIVATE
     main.cpp
+    tokenize.cpp
 )
 target_include_directories(formula_parser PRIVATE
     ${PROJECT_SOURCE_DIR}/include
