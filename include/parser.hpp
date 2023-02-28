@@ -5,6 +5,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <collection2/list.hpp>
 #include <cstddef>
 
 #include "token.hpp"
@@ -24,6 +25,6 @@ size_t parseNumber(char const* str);
  *
  * @param formula 数式
  */
-void tokenize(char const* formula);
+void tokenize(collection2::List<Token>& list, const char* formula);
 
 #endif /* PARSER_H */

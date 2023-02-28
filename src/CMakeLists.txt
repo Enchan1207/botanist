@@ -4,7 +4,14 @@
 
 cmake_minimum_required(VERSION 3.0)
 
-## add external dependencies here
+# dependency
+include(FetchContent)
+FetchContent_Declare(
+    collection2
+    GIT_REPOSITORY https://github.com/Enchan1207/collection2
+    GIT_TAG v0.1.0
+)
+FetchContent_MakeAvailable(collection2)
 
 ## configure executable
 add_executable(formula_parser)
@@ -17,4 +24,7 @@ target_include_directories(formula_parser PRIVATE
 )
 target_compile_options(formula_parser PRIVATE
     -Wall
+)
+target_link_libraries(formula_parser PRIVATE
+    collection2 
 )

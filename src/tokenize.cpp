@@ -8,6 +8,8 @@
 
 #include "parser.hpp"
 
+using namespace collection2;
+
 size_t parseNumber(char const* str) {
     /**
      * @brief 数値パース状態
@@ -58,7 +60,7 @@ size_t parseNumber(char const* str) {
     return cursor;
 }
 
-void tokenize(char const* formula) {
+void tokenize(collection2::List<Token>& list, const char* formula) {
     auto p = formula;
     while (*p) {
         // 空白や改行など、トークンに無関係なものは読み飛ばす
@@ -69,27 +71,35 @@ void tokenize(char const* formula) {
 
         // 演算子
         if (*p == '+' || *p == '-' || *p == '*' || *p == '/') {
-            std::cout << "operator: " << *p << std::endl;
+            Token token;
+            token.kind = TokenKind::Operator;
+            token.content = p;
+            token.length = 1;
+            list.append(token);
             p++;
             continue;
         }
 
         // 括弧
         if (*p == '(' || *p == ')') {
-            std::cout << "bracket: " << *p << std::endl;
+            Token token;
+            token.kind = TokenKind::Bracket;
+            token.content = p;
+            token.length = 1;
+            list.append(token);
             p++;
             continue;
         }
 
         // 数値
         if (isdigit(*p)) {
-            std::cout << "digit: ";
             size_t numLength = parseNumber(p);
-            for (size_t i = 0; i < numLength; i++) {
-                std::cout << *p;
-                p++;
-            }
-            std::cout << std::endl;
+            Token token;
+            token.kind = TokenKind::Number;
+            token.content = p;
+            token.length = numLength;
+            list.append(token);
+            p += numLength;
             continue;
         }
 
@@ -97,6 +107,4 @@ void tokenize(char const* formula) {
         std::cerr << "ERROR! unexpected charactor: " << *p << std::endl;
         break;
     }
-
-    std::cout << "tokenize finished." << std::endl;
 }

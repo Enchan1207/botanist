@@ -14,7 +14,13 @@ enum class TokenKind {
     // 数値
     Number,
 
-    // 演算子、括弧等、数値以外のシンボル
+    // 演算子
+    Operator,
+
+    // 括弧
+    Bracket,
+
+    // それ以外のシンボル
     Symbol,
 
     // トークン列の終端
@@ -28,14 +34,11 @@ struct Token {
     // 種別
     TokenKind kind;
 
-    // 次のトークンへのポインタ
-    Token* next;
-
     // トークンが持つ内容
-    char* content;
+    const char* content = nullptr;
 
-    // 文字数
-    size_t length;
+    // contentの長さ
+    size_t length = 0;
 };
 
 #endif /* TOKEN_H */
