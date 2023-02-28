@@ -17,6 +17,7 @@ FetchContent_MakeAvailable(collection2)
 add_executable(formula_parser)
 target_sources(formula_parser PRIVATE
     main.cpp
+    parse_elements.cpp
     tokenize.cpp
 )
 target_include_directories(formula_parser PRIVATE
