@@ -23,10 +23,7 @@ void tokenize(collection2::List<Token>& list, const char* formula) {
         // 演算子
         const auto positionAsOperator = parseOperator(p);
         if (positionAsOperator > 0) {
-            Token token;
-            token.kind = TokenKind::Operator;
-            token.content = p;
-            token.length = positionAsOperator;
+            Token token(TokenKind::Operator, p, positionAsOperator);
             list.append(token);
             p += positionAsOperator;
             continue;
@@ -35,10 +32,7 @@ void tokenize(collection2::List<Token>& list, const char* formula) {
         // 括弧
         const auto positionAsBracket = parseBracket(p);
         if (positionAsBracket > 0) {
-            Token token;
-            token.kind = TokenKind::Bracket;
-            token.content = p;
-            token.length = positionAsBracket;
+            Token token(TokenKind::Bracket, p, positionAsBracket);
             list.append(token);
             p += positionAsBracket;
             continue;
@@ -47,10 +41,7 @@ void tokenize(collection2::List<Token>& list, const char* formula) {
         // 数値
         const auto positionAsNumber = parseNumber(p);
         if (positionAsNumber > 0) {
-            Token token;
-            token.kind = TokenKind::Number;
-            token.content = p;
-            token.length = positionAsNumber;
+            Token token(TokenKind::Number, p, positionAsNumber);
             list.append(token);
             p += positionAsNumber;
             continue;
