@@ -20,12 +20,16 @@ int main(int argc, char const* argv[]) {
 
     // トークナイザに渡す
     botanist::Tokenizer tokenizer(formula);
-    auto* tokenNode = tokenizer.tokenize();
-
-    if (tokenNode == nullptr) {
-        std::cerr << "Tokenize failed!" << std::endl;
+    auto result = tokenizer.tokenize();
+    if (result != 0) {
+        for (size_t i = 0; i < result - 1; i++) {
+            std::cerr << ' ';
+        }
+        std::cerr << "\033[31;1m^\033[0m" << std::endl;
+        std::cerr << "Tokenize failed: unexpected character found at " << result << std::endl;
         return 1;
     }
+    auto* tokenNode = tokenizer.tokens();
 
     while (tokenNode != nullptr) {
         const auto token = tokenNode->element;

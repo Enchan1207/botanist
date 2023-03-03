@@ -6,7 +6,7 @@
 
 namespace botanist {
 
-collection2::Node<Token>* Tokenizer::tokenize() {
+collection2::list_size_t Tokenizer::tokenize() {
     auto formulaPtr = formula;
     while (*formulaPtr) {
         // 空白や改行など、トークンに無関係なものは読み飛ばす
@@ -19,16 +19,14 @@ collection2::Node<Token>* Tokenizer::tokenize() {
         Token::Kind expectedKind = Token::Kind::Invalid;
         size_t expectedLength = 0;
         if (!tryParse(formulaPtr, expectedKind, expectedLength)) {
-            // TODO: エラーをもう少しわかりやすく
-            return nullptr;
+            return static_cast<collection2::list_size_t>(formulaPtr - formula + 1);
         }
 
         // トークンリストに追加
-        tokens.append(Token(expectedKind, formulaPtr, expectedLength));
+        tokenList.append(Token(expectedKind, formulaPtr, expectedLength));
         formulaPtr += expectedLength;
     }
-
-    return tokens.head();
+    return 0;
 }
 
 }  // namespace botanist

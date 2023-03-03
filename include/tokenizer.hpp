@@ -23,7 +23,7 @@ class Tokenizer final {
     collection2::Node<Token> internalTokensData[64];
 
     /// @brief 数式から構成されたトークンのリスト
-    collection2::List<Token> tokens;
+    collection2::List<Token> tokenList;
 
     /**
      * @brief 与えられた文字列がなんらかのトークンとして成立するかを調べ、成立する場合はその長さを返す
@@ -74,15 +74,24 @@ class Tokenizer final {
      */
     explicit Tokenizer(char const* formula)
         : formula(formula),
-          tokens(collection2::List<Token>(internalTokensData, sizeof(internalTokensData) / sizeof(internalTokensData[0]))){};
+          tokenList(internalTokensData, sizeof(internalTokensData) / sizeof(internalTokensData[0])){};
 
     /**
      * @brief 与えられた数式を、数値や演算子、括弧等のトークンに分割する
      *
-     * @return Node<Token>* トークンリストの先頭へのポインタ
-     * @note 失敗した場合はnullptrが返ります。
+     * @return collection2::list_size_t 正常にパースできなかった場合の位置
+     * @note トークナイズに成功した場合は0、失敗した場合は何文字目で失敗したかが返ります。
      */
-    collection2::Node<Token>* tokenize();
+    collection2::list_size_t tokenize();
+
+    /**
+     * @brief 最初のトークンへのポインタを取得する
+     *
+     * @return collection2::Node<Token>* 最初のトークンへのポインタ
+     */
+    collection2::Node<Token>* tokens() {
+        return tokenList.head();
+    }
 };
 
 }  // namespace botanist
