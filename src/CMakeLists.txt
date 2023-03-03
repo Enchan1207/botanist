@@ -10,6 +10,7 @@ target_sources(formula_parser PRIVATE
     tokenizer/parse_elements.cpp
     tokenizer/tokenize.cpp
     parser/parser.cpp
+    analyser/analyse.cpp
 )
 target_include_directories(formula_parser PRIVATE
     ${PROJECT_SOURCE_DIR}/include

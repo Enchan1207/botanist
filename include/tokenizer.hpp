@@ -85,7 +85,7 @@ class Tokenizer final {
     collection2::list_size_t tokenize();
 
     /**
-     * @brief 最初のトークンへのポインタを取得する
+     * @brief トークンのリストを取得
      *
      * @return collection2::Node<Token>* 最初のトークンへのポインタ
      */

@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "tokenizer.hpp"
+#include "parser.hpp"
 
 using namespace collection2;
 using TokenKind = botanist::Token::Kind;
@@ -19,6 +19,7 @@ int main(int argc, char const* argv[]) {
     std::cout << formula << std::endl;
 
     // トークナイザに渡す
+    std::cout << "Tokenize..." << std::endl;
     botanist::Tokenizer tokenizer(formula);
     auto result = tokenizer.tokenize();
     if (result != 0) {
@@ -56,11 +57,16 @@ int main(int argc, char const* argv[]) {
         // トークンの内容
         char contentBuffer[32] = {0};
         memcpy(contentBuffer, token.content, token.length);
-        std::cout << contentBuffer << " \033[0m";
+        std::cout << contentBuffer << "\033[0m";
 
         tokenNode = tokenNode->next;
     }
     std::cout << std::endl;
+
+    // トークナイザの出力をアナライザに突っ込む
+    std::cout << "Analyse..." << std::endl;
+    botanist::Analyser analyser(tokenizer.tokens());
+    analyser.analyse();
 
     return 0;
 }
