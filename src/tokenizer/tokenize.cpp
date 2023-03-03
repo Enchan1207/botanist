@@ -2,10 +2,6 @@
 /// @brief トークナイズ
 ///
 
-#include <cctype>
-#include <cstdlib>
-#include <iostream>
-
 #include "tokenizer.hpp"
 
 namespace botanist {
@@ -24,7 +20,6 @@ collection2::Node<Token>* Tokenizer::tokenize() {
         size_t expectedLength = 0;
         if (!tryParse(formulaPtr, expectedKind, expectedLength)) {
             // TODO: エラーをもう少しわかりやすく
-            std::cerr << "ERROR! unexpected charactor: " << *formulaPtr << std::endl;
             return nullptr;
         }
 

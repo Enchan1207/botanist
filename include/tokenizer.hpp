@@ -9,7 +9,6 @@
 #include <collection2/list.hpp>
 #include <cstddef>
 #include <cstring>
-#include <iostream>
 
 #include "token.hpp"
 

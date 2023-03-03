@@ -4,22 +4,12 @@
 
 cmake_minimum_required(VERSION 3.0)
 
-# dependency
-include(FetchContent)
-FetchContent_Declare(
-    collection2
-    GIT_REPOSITORY https://github.com/Enchan1207/collection2
-    GIT_TAG v0.2.0
-)
-FetchContent_MakeAvailable(collection2)
-
-## configure executable
-add_executable(formula_parser)
+## configure library
+add_library(formula_parser)
 target_sources(formula_parser PRIVATE
-    main.cpp
-    parse_elements.cpp
-    parser.cpp
-    tokenize.cpp
+    tokenizer/parse_elements.cpp
+    tokenizer/tokenize.cpp
+    parser/parser.cpp
 )
 target_include_directories(formula_parser PRIVATE
     ${PROJECT_SOURCE_DIR}/include
