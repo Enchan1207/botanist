@@ -2,18 +2,21 @@
 // 数式パーサ
 //
 
-#ifndef PARSER_H
-#define PARSER_H
-
-#include <collection2/list.hpp>
+#ifndef BOTANIST_PARSER_H
+#define BOTANIST_PARSER_H
 
 #include "token.hpp"
 
-/**
- * @brief 与えられた数式を、数値や演算子、括弧等のトークンに分割する
- *
- * @param formula 数式
- */
-void tokenize(collection2::List<Token>& list, const char* formula);
+namespace botanist {
 
-#endif /* PARSER_H */
+class Parser {
+   private:
+    /* data */
+   public:
+    Parser(/* args */);
+    ~Parser();
+};
+
+}  // namespace botanist
+
+#endif /* BOTANIST_PARSER_H */

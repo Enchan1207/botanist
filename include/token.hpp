@@ -1,43 +1,41 @@
-//
-// 数式トークン
-//
+/// @file
+/// @brief 数式トークン
+///
 
-#ifndef TOKEN_H
-#define TOKEN_H
+#ifndef BOTANIST_TOKEN_H
+#define BOTANIST_TOKEN_H
 
 #include <cstddef>
 
-/**
- * @brief トークン種別
- */
-enum class TokenKind {
-    // 数値
-    Number,
+namespace botanist {
 
-    // 演算子
-    Operator,
-
-    // 括弧
-    Bracket,
-
-    // それ以外のシンボル
-    Symbol,
-
-    // トークン列の終端
-    Terminator
-};
-
-/**
- * @brief 式を構成するトークン
- */
+/// @brief 式を構成するトークン
 struct Token {
-    // トークン種別
-    TokenKind kind = TokenKind::Terminator;
+    /// @brief トークンの種類
+    enum class Kind {
+        /// @brief 数値
+        Number,
 
-    // トークンが持つ内容
+        /// @brief 演算子
+        Operator,
+
+        /// @brief 括弧
+        Bracket,
+
+        /// @brief それ以外のシンボル
+        Symbol,
+
+        /// @brief 無効なトークン
+        Invalid
+    };
+
+    /// @brief このトークンの種類
+    Kind kind = Kind::Invalid;
+
+    /// @brief トークンが持つ内容
     const char* content = nullptr;
 
-    // contentの長さ
+    /// @brief contentの長さ
     size_t length = 0;
 
     Token() = default;
@@ -45,11 +43,13 @@ struct Token {
     /**
      * @brief トークンを生成
      *
-     * @param kind トークン種別
+     * @param kind このトークンの種類
      * @param content トークンが持つ内容
-     * @param length contnetの長さ
+     * @param length contentの長さ
      */
-    Token(TokenKind kind, const char* content, size_t length) : kind(kind), content(content), length(length){};
+    Token(Kind kind, const char* content, size_t length) : kind(kind), content(content), length(length){};
 };
 
-#endif /* TOKEN_H */
+}  // namespace botanist
+
+#endif /* BOTANIST_TOKEN_H */

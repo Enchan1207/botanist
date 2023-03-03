@@ -6,9 +6,10 @@
 #include <cstddef>
 #include <iostream>
 
-#include "parser.hpp"
+#include "tokenizer.hpp"
 
 using namespace collection2;
+using TokenKind = botanist::Token::Kind;
 
 int main(int argc, char const* argv[]) {
     // 対象の式は実行引数経由で渡されることを想定
@@ -17,22 +18,24 @@ int main(int argc, char const* argv[]) {
         return 1;
     }
     char const* formula = argv[1];
+    std::cout << formula << std::endl;
 
-    // トークンに分割する
-    std::cout << "  formula: " << formula << std::endl;
-    const size_t tokenDataSize = 32;
-    Node<Token> tokenData[tokenDataSize];
-    List<Token> tokenList(tokenData, tokenDataSize);
-    tokenize(tokenList, formula);
+    // トークナイザに渡す
+    botanist::Tokenizer tokenizer(formula);
+    auto* tokenNode = tokenizer.tokenize();
 
-    // 書き出してみる
-    std::cout << "tokenized: ";
-    Token token;
-    while (tokenList.remove(0, &token) == OperationResult::Success) {
+    if (tokenNode == nullptr) {
+        std::cerr << "Tokenize failed!" << std::endl;
+        return 1;
+    }
+
+    while (tokenNode != nullptr) {
+        const auto token = tokenNode->element;
+
         // トークンの種類によって色を変える
         switch (token.kind) {
             case TokenKind::Number:
-                std::cout << "\033[2m";
+                std::cout << "\033[0m";
                 break;
 
             case TokenKind::Operator:
@@ -40,7 +43,7 @@ int main(int argc, char const* argv[]) {
                 break;
 
             case TokenKind::Bracket:
-                std::cout << "\033[1m";
+                std::cout << "\033[34;1m";
                 break;
 
             default:
@@ -50,9 +53,10 @@ int main(int argc, char const* argv[]) {
 
         // トークンの内容
         char contentBuffer[32] = {0};
-        const auto contentSizeOfToken = token.length;
-        memcpy(contentBuffer, token.content, contentSizeOfToken);
+        memcpy(contentBuffer, token.content, token.length);
         std::cout << contentBuffer << " \033[0m";
+
+        tokenNode = tokenNode->next;
     }
     std::cout << std::endl;
 

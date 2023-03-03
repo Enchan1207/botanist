@@ -1,10 +1,42 @@
-//
-// 数式構成要素のパース
-//
+/// @file
+/// @brief 数式構成要素のパース
+///
 
-#include "parse_elements.hpp"
+#include "tokenizer.hpp"
 
-size_t parseNumber(char const* str) {
+namespace botanist {
+
+bool Tokenizer::tryParse(char const* str, Token::Kind& kind, size_t& parsedTokenLength) const {
+    // 演算子
+    const auto positionAsOperator = tryParseAsOperator(str);
+    if (positionAsOperator > 0) {
+        kind = Token::Kind::Operator;
+        parsedTokenLength = positionAsOperator;
+        return true;
+    }
+
+    // 括弧
+    const auto positionAsBracket = tryParseAsBracket(str);
+    if (positionAsBracket > 0) {
+        kind = Token::Kind::Bracket;
+        parsedTokenLength = positionAsBracket;
+        return true;
+    }
+
+    // 数値
+    const auto positionAsNumber = tryParseAsNumber(str);
+    if (positionAsNumber > 0) {
+        kind = Token::Kind::Number;
+        parsedTokenLength = positionAsNumber;
+        return true;
+    }
+
+    // どれにも当てはまらない
+    kind = Token::Kind::Invalid;
+    return false;
+}
+
+size_t Tokenizer::tryParseAsNumber(char const* str) const {
     /**
      * @brief 数値パース状態
      */
@@ -50,11 +82,13 @@ size_t parseNumber(char const* str) {
                 break;
 
             case ParseState::Fractional:
-                // 数値なら続ける それ以外なら終わる
+                // 数値なら続ける
                 if (isdigit(str[cursor])) {
                     cursor++;
                     continue;
                 }
+                // 数値でなければ、一つ戻って処理を終える ("1." の場合に2が返ってはいけないため)
+                cursor--;
                 currentState = ParseState::Terminate;
                 break;
 
@@ -67,12 +101,12 @@ size_t parseNumber(char const* str) {
     return cursor;
 }
 
-size_t parseOperator(char const* str) {
+size_t Tokenizer::tryParseAsOperator(char const* str) const {
     // 二項演算子
     const char* binaryOperators[] = {"<<", ">>", ""};
     const char** binaryOpPtr = binaryOperators;
     while (strcmp(*binaryOpPtr, "") != 0) {
-        char buf[3] = {*str, *(str + 1), '\0'};
+        const char buf[3] = {*str, *(str + 1), '\0'};
         if (strcmp(buf, *binaryOpPtr) == 0) {
             return 2;
         }
@@ -92,6 +126,8 @@ size_t parseOperator(char const* str) {
     return 0;
 }
 
-size_t parseBracket(char const* str) {
+size_t Tokenizer::tryParseAsBracket(char const* str) const {
     return (*str == '(' || *str == ')') ? 1 : 0;
 }
+
+}  // namespace botanist

@@ -1,54 +1,39 @@
-//
-// 式のトークナイズ
-//
+/// @file
+/// @brief トークナイズ
+///
 
 #include <cctype>
 #include <cstdlib>
 #include <iostream>
 
-#include "parse_elements.hpp"
-#include "parser.hpp"
+#include "tokenizer.hpp"
 
-using namespace collection2;
+namespace botanist {
 
-void tokenize(collection2::List<Token>& list, const char* formula) {
-    auto p = formula;
-    while (*p) {
+collection2::Node<Token>* Tokenizer::tokenize() {
+    auto formulaPtr = formula;
+    while (*formulaPtr) {
         // 空白や改行など、トークンに無関係なものは読み飛ばす
-        if (isspace(*p)) {
-            p++;
+        if (isspace(*formulaPtr)) {
+            formulaPtr++;
             continue;
         }
 
-        // 演算子
-        const auto positionAsOperator = parseOperator(p);
-        if (positionAsOperator > 0) {
-            Token token(TokenKind::Operator, p, positionAsOperator);
-            list.append(token);
-            p += positionAsOperator;
-            continue;
+        // なんらかのトークンにマッチするか調べる
+        Token::Kind expectedKind = Token::Kind::Invalid;
+        size_t expectedLength = 0;
+        if (!tryParse(formulaPtr, expectedKind, expectedLength)) {
+            // TODO: エラーをもう少しわかりやすく
+            std::cerr << "ERROR! unexpected charactor: " << *formulaPtr << std::endl;
+            return nullptr;
         }
 
-        // 括弧
-        const auto positionAsBracket = parseBracket(p);
-        if (positionAsBracket > 0) {
-            Token token(TokenKind::Bracket, p, positionAsBracket);
-            list.append(token);
-            p += positionAsBracket;
-            continue;
-        }
-
-        // 数値
-        const auto positionAsNumber = parseNumber(p);
-        if (positionAsNumber > 0) {
-            Token token(TokenKind::Number, p, positionAsNumber);
-            list.append(token);
-            p += positionAsNumber;
-            continue;
-        }
-
-        // トークナイズできない文字
-        std::cerr << "ERROR! unexpected charactor: " << *p << std::endl;
-        break;
+        // トークンリストに追加
+        tokens.append(Token(expectedKind, formulaPtr, expectedLength));
+        formulaPtr += expectedLength;
     }
+
+    return tokens.head();
 }
+
+}  // namespace botanist

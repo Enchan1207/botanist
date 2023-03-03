@@ -9,7 +9,7 @@ include(FetchContent)
 FetchContent_Declare(
     collection2
     GIT_REPOSITORY https://github.com/Enchan1207/collection2
-    GIT_TAG v0.1.0
+    GIT_TAG v0.2.0
 )
 FetchContent_MakeAvailable(collection2)
 
@@ -18,6 +18,7 @@ add_executable(formula_parser)
 target_sources(formula_parser PRIVATE
     main.cpp
     parse_elements.cpp
+    parser.cpp
     tokenize.cpp
 )
 target_include_directories(formula_parser PRIVATE
