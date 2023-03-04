@@ -25,8 +25,9 @@ SyntaxNode* Analyser::createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs
 }
 
 bool Analyser::consumeIf(const Token::Kind kind) {
-    if (cursor->element.kind == kind) {
-        cursor++;
+    if (currentToken->element.kind == kind) {
+        currentToken = currentToken->next;
+        ;
         return true;
     }
     return false;
@@ -34,18 +35,19 @@ bool Analyser::consumeIf(const Token::Kind kind) {
 
 bool Analyser::consumeIf(const char* content, const size_t length) {
     // 比較対象の方が短いことはありえない
-    if (length > cursor->element.length) {
+    if (length > currentToken->element.length) {
         return false;
     }
 
     // 一致しなくなったらfalseを返す
     for (size_t i = 0; i < length; i++) {
-        if (*(cursor->element.content + i) != *(content + i)) {
+        if (*(currentToken->element.content + i) != *(content + i)) {
             return false;
         }
     }
 
-    cursor++;
+    currentToken = currentToken->next;
+    ;
     return true;
 }
 

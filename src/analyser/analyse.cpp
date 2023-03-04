@@ -18,11 +18,11 @@ SyntaxNode* Analyser::expression() {
     auto* node = unary();
 
     if (consumeIf("+", 1)) {
-        return createNewNode(SyntaxNodeKind::Add, node, expression(), &(cursor->element));
+        return createNewNode(SyntaxNodeKind::Add, node, expression(), &(currentToken->element));
     }
 
     if (consumeIf("-", 1)) {
-        return createNewNode(SyntaxNodeKind::Subtract, node, expression(), &(cursor->element));
+        return createNewNode(SyntaxNodeKind::Subtract, node, expression(), &(currentToken->element));
     }
 
     return node;
@@ -32,11 +32,11 @@ SyntaxNode* Analyser::unary() {
     auto* node = factor();
 
     if (consumeIf("*", 1)) {
-        return createNewNode(SyntaxNodeKind::Multiply, node, unary(), &(cursor->element));
+        return createNewNode(SyntaxNodeKind::Multiply, node, unary(), &(currentToken->element));
     }
 
     if (consumeIf("/", 1)) {
-        return createNewNode(SyntaxNodeKind::Divide, node, unary(), &(cursor->element));
+        return createNewNode(SyntaxNodeKind::Divide, node, unary(), &(currentToken->element));
     }
 
     return node;
@@ -45,12 +45,14 @@ SyntaxNode* Analyser::unary() {
 SyntaxNode* Analyser::factor() {
     if (consumeIf("(", 1)) {
         auto* node = expression();
-        cursor++;  // 閉じ括弧の分
+        currentToken = currentToken->next;
+        ;  // 閉じ括弧の分
         return node;
     }
 
-    auto* numberNode = createNewNode(SyntaxNodeKind::Number, nullptr, nullptr, &(cursor->element));
-    cursor++;
+    auto* numberNode = createNewNode(SyntaxNodeKind::Number, nullptr, nullptr, &(currentToken->element));
+    currentToken = currentToken->next;
+    ;
     return numberNode;
 }
 

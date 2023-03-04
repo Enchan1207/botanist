@@ -54,13 +54,13 @@ size_t Tokenizer::tryParseAsNumber(char const* str) const {
         Terminate
     };
     ParseState currentState = ParseState::Ready;
-    long cursor = 0;
+    long numberCursor = 0;
     while (currentState != ParseState::Terminate) {
         switch (currentState) {
             case ParseState::Ready:
                 // 数値なら状態遷移 それ以外なら終わる
-                if (isdigit(str[cursor])) {
-                    cursor++;
+                if (isdigit(str[numberCursor])) {
+                    numberCursor++;
                     currentState = ParseState::Real;
                     continue;
                 }
@@ -69,12 +69,12 @@ size_t Tokenizer::tryParseAsNumber(char const* str) const {
 
             case ParseState::Real:
                 // 数値なら続ける 小数点なら状態遷移 それ以外なら終わる
-                if (isdigit(str[cursor])) {
-                    cursor++;
+                if (isdigit(str[numberCursor])) {
+                    numberCursor++;
                     continue;
                 }
-                if (str[cursor] == '.') {
-                    cursor++;
+                if (str[numberCursor] == '.') {
+                    numberCursor++;
                     currentState = ParseState::Fractional;
                     continue;
                 }
@@ -83,12 +83,12 @@ size_t Tokenizer::tryParseAsNumber(char const* str) const {
 
             case ParseState::Fractional:
                 // 数値なら続ける
-                if (isdigit(str[cursor])) {
-                    cursor++;
+                if (isdigit(str[numberCursor])) {
+                    numberCursor++;
                     continue;
                 }
                 // 数値でなければ、一つ戻って処理を終える ("1." の場合に2が返ってはいけないため)
-                cursor--;
+                numberCursor--;
                 currentState = ParseState::Terminate;
                 break;
 
@@ -98,7 +98,7 @@ size_t Tokenizer::tryParseAsNumber(char const* str) const {
         }
     }
 
-    return cursor;
+    return numberCursor;
 }
 
 size_t Tokenizer::tryParseAsOperator(char const* str) const {
