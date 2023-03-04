@@ -27,11 +27,17 @@ class Analyser final {
     SyntaxNode syntaxNodePool[64];
 
     /**
-     * @brief ノードプールから未割り当てのノードを探し、そのポインタを返す
+     * @brief ノードプールから未割り当てのノードを探して値をセットし、そのポインタを返す
      *
-     * @return SyntaxNode* 未割り当てのノード。プールがいっぱいになっている場合はnullptrが返ります。
+     * @param kind ノードの種類
+     * @param lhs 左辺
+     * @param rhs 右辺
+     * @param token 内容参照元のトークン
+     * @return SyntaxNode* 作成されたノード
+     *
+     * @note ノードプールがいっぱいになっている場合はnullptrが返ります。
      */
-    SyntaxNode* getNewNode();
+    SyntaxNode* createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs, SyntaxNode* rhs, const Token* token);
 
     /**
      * @brief 今見ているトークンの種類と引数が一致する場合はトークンカーソルを進める
@@ -89,9 +95,9 @@ class Analyser final {
     /**
      * @brief 構文ツリーをダンプ
      *
-     * @param root ダンプ開始点となるノード
+     * @param node ダンプ開始点となるノード
      */
-    void dumpSyntaxNode(SyntaxNode* root) const;
+    void dumpSyntaxNode(SyntaxNode* node) const;
 };
 
 }  // namespace botanist

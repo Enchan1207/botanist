@@ -7,14 +7,19 @@
 
 namespace botanist {
 
-SyntaxNode* Analyser::getNewNode() {
+SyntaxNode* Analyser::createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs, SyntaxNode* rhs, const Token* token) {
     // TODO: 要素数ハードコードの削除
     for (size_t i = 0; i < 64; i++) {
-        // フリーなノードを探す
-        if (syntaxNodePool[i].kind != SyntaxNode::Kind::Invalid) {
+        // フリーなノードを探し、値を入れる
+        auto* targetNode = &(syntaxNodePool[i]);
+        if (targetNode->kind != SyntaxNode::Kind::Invalid) {
             continue;
         }
-        return &(syntaxNodePool[i]);
+        targetNode->kind = kind;
+        targetNode->lhs = lhs;
+        targetNode->rhs = rhs;
+        targetNode->applyDataFromToken(token);
+        return targetNode;
     }
     return nullptr;
 }

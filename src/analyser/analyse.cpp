@@ -7,6 +7,8 @@
 
 namespace botanist {
 
+using SyntaxNodeKind = SyntaxNode::Kind;
+
 void Analyser::analyse() {
     auto* rootNode = expression();
     dumpSyntaxNode(rootNode);
@@ -16,21 +18,11 @@ SyntaxNode* Analyser::expression() {
     auto* node = unary();
 
     if (consumeIf("+", 1)) {
-        auto* addNode = getNewNode();
-        addNode->kind = SyntaxNode::Kind::Add;
-        addNode->applyDataFromToken(&(cursor->element));
-        addNode->lhs = node;
-        addNode->rhs = expression();
-        return node;
+        return createNewNode(SyntaxNodeKind::Add, node, expression(), &(cursor->element));
     }
 
     if (consumeIf("-", 1)) {
-        auto* subNode = getNewNode();
-        subNode->kind = SyntaxNode::Kind::Subtract;
-        subNode->applyDataFromToken(&(cursor->element));
-        subNode->lhs = node;
-        subNode->rhs = expression();
-        return node;
+        return createNewNode(SyntaxNodeKind::Subtract, node, expression(), &(cursor->element));
     }
 
     return node;
@@ -40,21 +32,11 @@ SyntaxNode* Analyser::unary() {
     auto* node = factor();
 
     if (consumeIf("*", 1)) {
-        auto* mulNode = getNewNode();
-        mulNode->kind = SyntaxNode::Kind::Multiply;
-        mulNode->applyDataFromToken(&(cursor->element));
-        mulNode->lhs = node;
-        mulNode->rhs = unary();
-        return node;
+        return createNewNode(SyntaxNodeKind::Multiply, node, unary(), &(cursor->element));
     }
 
     if (consumeIf("/", 1)) {
-        auto* divNode = getNewNode();
-        divNode->kind = SyntaxNode::Kind::Divide;
-        divNode->applyDataFromToken(&(cursor->element));
-        divNode->lhs = node;
-        divNode->rhs = unary();
-        return node;
+        return createNewNode(SyntaxNodeKind::Divide, node, unary(), &(cursor->element));
     }
 
     return node;
@@ -67,9 +49,7 @@ SyntaxNode* Analyser::factor() {
         return node;
     }
 
-    auto numberNode = getNewNode();
-    numberNode->kind = SyntaxNode::Kind::Number;
-    numberNode->applyDataFromToken(&(cursor->element));
+    auto* numberNode = createNewNode(SyntaxNodeKind::Number, nullptr, nullptr, &(cursor->element));
     cursor++;
     return numberNode;
 }
