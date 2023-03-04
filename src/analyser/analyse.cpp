@@ -17,13 +17,13 @@ void Analyser::analyse() {
 SyntaxNode* Analyser::expression() {
     auto* node = unary();
 
-    if (consume("+", 1) && currentToken != nullptr) {
+    if (forward("+", 1) && currentTokenNode != nullptr) {
         // 加算ノードを構成
         // TODO: 解析途中でプールがいっぱいになったらどうしよう?
         auto newNode = createNewNode();
         newNode->kind = SyntaxNodeKind::Add;
-        newNode->content = currentToken->element.content;
-        newNode->length = currentToken->element.length;
+        newNode->content = currentTokenNode->element.content;
+        newNode->length = currentTokenNode->element.length;
         newNode->lhs = node;
 
         // 右辺値は後で計算する
@@ -31,12 +31,12 @@ SyntaxNode* Analyser::expression() {
         return newNode;
     }
 
-    if (consume("-", 1) && currentToken != nullptr) {
+    if (forward("-", 1) && currentTokenNode != nullptr) {
         // 減算ノードを構成
         auto newNode = createNewNode();
         newNode->kind = SyntaxNodeKind::Subtract;
-        newNode->content = currentToken->element.content;
-        newNode->length = currentToken->element.length;
+        newNode->content = currentTokenNode->element.content;
+        newNode->length = currentTokenNode->element.length;
         newNode->lhs = node;
 
         // 右辺値は後で計算する
@@ -50,12 +50,12 @@ SyntaxNode* Analyser::expression() {
 SyntaxNode* Analyser::unary() {
     auto* node = factor();
 
-    if (consume("*", 1)) {
+    if (forward("*", 1)) {
         // 乗算ノードを構成
         auto newNode = createNewNode();
         newNode->kind = SyntaxNodeKind::Multiply;
-        newNode->content = currentToken->element.content;
-        newNode->length = currentToken->element.length;
+        newNode->content = currentTokenNode->element.content;
+        newNode->length = currentTokenNode->element.length;
         newNode->lhs = node;
 
         // 右辺値は後で計算する
@@ -63,12 +63,12 @@ SyntaxNode* Analyser::unary() {
         return newNode;
     }
 
-    if (consume("/", 1)) {
+    if (forward("/", 1)) {
         // 除算ノードを構成
         auto newNode = createNewNode();
         newNode->kind = SyntaxNodeKind::Divide;
-        newNode->content = currentToken->element.content;
-        newNode->length = currentToken->element.length;
+        newNode->content = currentTokenNode->element.content;
+        newNode->length = currentTokenNode->element.length;
         newNode->lhs = node;
 
         // 右辺値は後で計算する
@@ -80,24 +80,24 @@ SyntaxNode* Analyser::unary() {
 }
 
 SyntaxNode* Analyser::factor() {
-    if (consume("(", 1)) {
+    if (forward("(", 1)) {
         auto* node = expression();
 
         // 閉じ括弧があってほしい
-        if (!consume(")", 1)) {
+        if (!forward(")", 1)) {
             return nullptr;
         }
         return node;
     }
 
-    if (currentToken != nullptr) {
+    if (currentTokenNode != nullptr) {
         auto newNode = createNewNode();
         newNode->kind = SyntaxNodeKind::Number;
-        newNode->content = currentToken->element.content;
-        newNode->length = currentToken->element.length;
+        newNode->content = currentTokenNode->element.content;
+        newNode->length = currentTokenNode->element.length;
         newNode->lhs = nullptr;
         newNode->rhs = nullptr;
-        currentToken = currentToken->next;
+        currentTokenNode = currentTokenNode->next;
         return newNode;
     }
 

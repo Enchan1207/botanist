@@ -20,8 +20,8 @@ class Analyser final {
     /// @brief 最初のトークンへのポインタ
     const collection2::Node<Token>* firstTokenPtr;
 
-    /// @brief アナライザが現在見ているトークンリストの位置
-    collection2::Node<Token>* currentToken;
+    /// @brief アナライザが現在見ているトークンリストのノード
+    collection2::Node<Token>* currentTokenNode;
 
     /// @brief 構文ツリーを構成するノードのプール
     SyntaxNode syntaxNodePool[64];
@@ -50,7 +50,7 @@ class Analyser final {
      * @param length contentの文字数
      * @return bool トークンと一致しない場合はfalseが返ります。
      *
-     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理). また、第二引数はNULを考慮しません(`+`を評価したい場合は `consume("+", 1)` を呼び出してください)。
+     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理). また、第二引数はNULを考慮しません(`+`を評価したい場合は `expect("+", 1)` を呼び出してください)。
      */
     bool expect(const char* content, const size_t length = 1) const;
 
@@ -60,7 +60,7 @@ class Analyser final {
      * @param kind 比較するトークンの種類
      * @return bool トークンと一致しない場合はfalseが返ります。
      */
-    bool consume(const Token::Kind kind);
+    bool forward(const Token::Kind kind);
 
     /**
      * @brief 今見ているトークンの内容と引数が一致する場合はトークンカーソルを進める
@@ -69,9 +69,9 @@ class Analyser final {
      * @param length contentの文字数
      * @return bool トークンと一致しない場合はfalseが返ります。
      *
-     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理). また、第二引数はNULを考慮しません(`+`を評価したい場合は `consume("+", 1)` を呼び出してください)。
+     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理). また、第二引数はNULを考慮しません(`+`を評価したい場合は `forward("+", 1)` を呼び出してください)。
      */
-    bool consume(const char* content, const size_t length = 1);
+    bool forward(const char* content, const size_t length = 1);
 
     /**
      * @brief アナライザが見ているトークンを式の開始とみなしてパースを試みる
@@ -94,13 +94,6 @@ class Analyser final {
      */
     SyntaxNode* factor();
 
-    /**
-     * @brief 構文ノードをダンプ
-     *
-     * @param node 対象のノード
-     */
-    void dumpSyntaxNode(SyntaxNode* node) const;
-
    public:
     /**
      * @brief トークンリストを与えてアナライザを初期化
@@ -108,7 +101,7 @@ class Analyser final {
      * @param firstToken 最初のトークンへのポインタ
      */
     explicit Analyser(collection2::Node<Token>* firstToken)
-        : firstTokenPtr(firstToken), currentToken(firstToken){};
+        : firstTokenPtr(firstToken), currentTokenNode(firstToken){};
 
     /**
      * @brief トークナイズされた数式から構文ツリーを生成
@@ -121,6 +114,13 @@ class Analyser final {
      * @param node 対象のノード
      */
     void dumpSyntaxTree(SyntaxNode* node) const;
+
+    /**
+     * @brief 構文ノードをダンプ
+     *
+     * @param node 対象のノード
+     */
+    void dumpSyntaxNode(SyntaxNode* node) const;
 };
 
 }  // namespace botanist
