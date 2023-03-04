@@ -27,17 +27,32 @@ class Analyser final {
     SyntaxNode syntaxNodePool[64];
 
     /**
-     * @brief ノードプールから未割り当てのノードを探して値をセットし、そのポインタを返す
+     * @brief ノードプールから未割り当てのノードを探し、そのポインタを返す
      *
-     * @param kind ノードの種類
-     * @param lhs 左辺
-     * @param rhs 右辺
-     * @param token 内容参照元のトークン
-     * @return SyntaxNode* 作成されたノード
+     * @return SyntaxNode* 使用可能なノードへのポインタ
      *
      * @note ノードプールがいっぱいになっている場合はnullptrが返ります。
      */
-    SyntaxNode* createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs, SyntaxNode* rhs, const Token* token);
+    SyntaxNode* createNewNode();
+
+    /**
+     * @brief 今見ているトークンの種類と引数が一致するか調べる
+     *
+     * @param kind 比較するトークンの種類
+     * @return bool トークンと一致しない場合はfalseが返ります。
+     */
+    bool expect(const Token::Kind kind) const;
+
+    /**
+     * @brief 今見ているトークンの内容と引数が一致するか調べる
+     *
+     * @param content 比較するトークンの内容
+     * @param length contentの文字数
+     * @return bool トークンと一致しない場合はfalseが返ります。
+     *
+     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理). また、第二引数はNULを考慮しません(`+`を評価したい場合は `consume("+", 1)` を呼び出してください)。
+     */
+    bool expect(const char* content, const size_t length = 1) const;
 
     /**
      * @brief 今見ているトークンの種類と引数が一致する場合はトークンカーソルを進める
@@ -45,7 +60,7 @@ class Analyser final {
      * @param kind 比較するトークンの種類
      * @return bool トークンと一致しない場合はfalseが返ります。
      */
-    bool consumeIf(const Token::Kind kind);
+    bool consume(const Token::Kind kind);
 
     /**
      * @brief 今見ているトークンの内容と引数が一致する場合はトークンカーソルを進める
@@ -54,9 +69,9 @@ class Analyser final {
      * @param length contentの文字数
      * @return bool トークンと一致しない場合はfalseが返ります。
      *
-     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理). また、第二引数はNULを考慮しません(`+`を評価したい場合は `consumeIf("+", 1)` を呼び出してください)。
+     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理). また、第二引数はNULを考慮しません(`+`を評価したい場合は `consume("+", 1)` を呼び出してください)。
      */
-    bool consumeIf(const char* content, const size_t length = 1);
+    bool consume(const char* content, const size_t length = 1);
 
     /**
      * @brief アナライザが見ているトークンを式の開始とみなしてパースを試みる
@@ -79,13 +94,21 @@ class Analyser final {
      */
     SyntaxNode* factor();
 
+    /**
+     * @brief 構文ノードをダンプ
+     *
+     * @param node 対象のノード
+     */
+    void dumpSyntaxNode(SyntaxNode* node) const;
+
    public:
     /**
      * @brief トークンリストを与えてアナライザを初期化
      *
      * @param firstToken 最初のトークンへのポインタ
      */
-    explicit Analyser(collection2::Node<Token>* firstToken) : firstTokenPtr(firstToken), currentToken(firstToken){};
+    explicit Analyser(collection2::Node<Token>* firstToken)
+        : firstTokenPtr(firstToken), currentToken(firstToken){};
 
     /**
      * @brief トークナイズされた数式から構文ツリーを生成
@@ -95,9 +118,9 @@ class Analyser final {
     /**
      * @brief 構文ツリーをダンプ
      *
-     * @param node ダンプ開始点となるノード
+     * @param node 対象のノード
      */
-    void dumpSyntaxNode(SyntaxNode* node) const;
+    void dumpSyntaxTree(SyntaxNode* node) const;
 };
 
 }  // namespace botanist

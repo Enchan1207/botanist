@@ -7,32 +7,33 @@
 
 namespace botanist {
 
-SyntaxNode* Analyser::createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs, SyntaxNode* rhs, const Token* token) {
+SyntaxNode* Analyser::createNewNode() {
     // TODO: 要素数ハードコードの削除
     for (size_t i = 0; i < 64; i++) {
         // フリーなノードを探し、値を入れる
-        auto* targetNode = &(syntaxNodePool[i]);
-        if (targetNode->kind != SyntaxNode::Kind::Invalid) {
+        auto* targetNodePtr = &(syntaxNodePool[i]);
+        if (targetNodePtr->kind != SyntaxNode::Kind::Invalid) {
             continue;
         }
-        targetNode->kind = kind;
-        targetNode->lhs = lhs;
-        targetNode->rhs = rhs;
-        targetNode->applyDataFromToken(token);
-        return targetNode;
+        return targetNodePtr;
     }
     return nullptr;
 }
 
-bool Analyser::consumeIf(const Token::Kind kind) {
-    if (currentToken->element.kind == kind) {
-        currentToken = currentToken->next;
-        return true;
+bool Analyser::expect(const Token::Kind kind) const {
+    // 終端チェック
+    if (currentToken == nullptr) {
+        return false;
     }
-    return false;
+    return currentToken->element.kind == kind;
 }
 
-bool Analyser::consumeIf(const char* content, const size_t length) {
+bool Analyser::expect(const char* content, const size_t length) const {
+    // 終端チェック
+    if (currentToken == nullptr) {
+        return false;
+    }
+
     // 比較対象の方が短いことはありえない
     if (length > currentToken->element.length) {
         return false;
@@ -44,9 +45,23 @@ bool Analyser::consumeIf(const char* content, const size_t length) {
             return false;
         }
     }
-
-    currentToken = currentToken->next;
     return true;
+}
+
+bool Analyser::consume(const Token::Kind kind) {
+    auto result = expect(kind);
+    if (result) {
+        currentToken = currentToken->next;
+    }
+    return result;
+}
+
+bool Analyser::consume(const char* content, const size_t length) {
+    auto result = expect(content, length);
+    if (result) {
+        currentToken = currentToken->next;
+    }
+    return result;
 }
 
 }  // namespace botanist

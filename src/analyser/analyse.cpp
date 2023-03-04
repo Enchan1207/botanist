@@ -11,18 +11,37 @@ using SyntaxNodeKind = SyntaxNode::Kind;
 
 void Analyser::analyse() {
     auto* rootNode = expression();
-    dumpSyntaxNode(rootNode);
+    dumpSyntaxTree(rootNode);
 }
 
 SyntaxNode* Analyser::expression() {
     auto* node = unary();
 
-    if (consumeIf("+", 1)) {
-        return createNewNode(SyntaxNodeKind::Add, node, expression(), &(currentToken->element));
+    if (consume("+", 1) && currentToken != nullptr) {
+        // 加算ノードを構成
+        // TODO: 解析途中でプールがいっぱいになったらどうしよう?
+        auto newNode = createNewNode();
+        newNode->kind = SyntaxNodeKind::Add;
+        newNode->content = currentToken->element.content;
+        newNode->length = currentToken->element.length;
+        newNode->lhs = node;
+
+        // 右辺値は後で計算する
+        newNode->rhs = expression();
+        return newNode;
     }
 
-    if (consumeIf("-", 1)) {
-        return createNewNode(SyntaxNodeKind::Subtract, node, expression(), &(currentToken->element));
+    if (consume("-", 1) && currentToken != nullptr) {
+        // 減算ノードを構成
+        auto newNode = createNewNode();
+        newNode->kind = SyntaxNodeKind::Subtract;
+        newNode->content = currentToken->element.content;
+        newNode->length = currentToken->element.length;
+        newNode->lhs = node;
+
+        // 右辺値は後で計算する
+        newNode->rhs = expression();
+        return newNode;
     }
 
     return node;
@@ -31,27 +50,58 @@ SyntaxNode* Analyser::expression() {
 SyntaxNode* Analyser::unary() {
     auto* node = factor();
 
-    if (consumeIf("*", 1)) {
-        return createNewNode(SyntaxNodeKind::Multiply, node, unary(), &(currentToken->element));
+    if (consume("*", 1)) {
+        // 乗算ノードを構成
+        auto newNode = createNewNode();
+        newNode->kind = SyntaxNodeKind::Multiply;
+        newNode->content = currentToken->element.content;
+        newNode->length = currentToken->element.length;
+        newNode->lhs = node;
+
+        // 右辺値は後で計算する
+        newNode->rhs = unary();
+        return newNode;
     }
 
-    if (consumeIf("/", 1)) {
-        return createNewNode(SyntaxNodeKind::Divide, node, unary(), &(currentToken->element));
+    if (consume("/", 1)) {
+        // 除算ノードを構成
+        auto newNode = createNewNode();
+        newNode->kind = SyntaxNodeKind::Divide;
+        newNode->content = currentToken->element.content;
+        newNode->length = currentToken->element.length;
+        newNode->lhs = node;
+
+        // 右辺値は後で計算する
+        newNode->rhs = unary();
+        return newNode;
     }
 
     return node;
 }
 
 SyntaxNode* Analyser::factor() {
-    if (consumeIf("(", 1)) {
+    if (consume("(", 1)) {
         auto* node = expression();
-        currentToken = currentToken->next;  // 閉じ括弧の分
+
+        // 閉じ括弧があってほしい
+        if (!consume(")", 1)) {
+            return nullptr;
+        }
         return node;
     }
 
-    auto* numberNode = createNewNode(SyntaxNodeKind::Number, nullptr, nullptr, &(currentToken->element));
-    currentToken = currentToken->next;
-    return numberNode;
+    if (currentToken != nullptr) {
+        auto newNode = createNewNode();
+        newNode->kind = SyntaxNodeKind::Number;
+        newNode->content = currentToken->element.content;
+        newNode->length = currentToken->element.length;
+        newNode->lhs = nullptr;
+        newNode->rhs = nullptr;
+        currentToken = currentToken->next;
+        return newNode;
+    }
+
+    return nullptr;
 }
 
 }  // namespace botanist

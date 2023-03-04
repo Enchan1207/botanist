@@ -12,6 +12,11 @@
 
 namespace botanist {
 
+void Analyser::dumpSyntaxTree(SyntaxNode* node) const {
+    std::cout << "flowchart TD" << std::endl;
+    dumpSyntaxNode(node);
+}
+
 void Analyser::dumpSyntaxNode(SyntaxNode* node) const {
     // アドレスを取得しておく
     auto nodeAddress = static_cast<const void*>(node);
@@ -22,31 +27,33 @@ void Analyser::dumpSyntaxNode(SyntaxNode* node) const {
     // ノードの内容を出力
     char identifierBuffer[node->length + 1];
     memset(identifierBuffer, '\0', node->length + 1);
+    std::cout << "  " << addressStr << "[";
     switch (node->kind) {
         case SyntaxNode::Kind::Number:
             memcpy(identifierBuffer, node->content, node->length);
+            std::cout << identifierBuffer;
             break;
 
         case SyntaxNode::Kind::Add:
-            identifierBuffer[0] = '+';
+            std::cout << "+";
             break;
 
         case SyntaxNode::Kind::Subtract:
-            identifierBuffer[0] = '-';
+            std::cout << "-";
             break;
 
         case SyntaxNode::Kind::Multiply:
-            identifierBuffer[0] = '*';
+            std::cout << "*";
             break;
 
         case SyntaxNode::Kind::Divide:
-            identifierBuffer[0] = '/';
+            std::cout << "\"/\"";
             break;
 
         default:
             break;
     }
-    std::cout << "  " << addressStr << "[" << identifierBuffer << "]" << std::endl;
+    std::cout << "]" << std::endl;
 
     // ノードの接続関係を説明
     if (node->lhs != nullptr) {
@@ -57,7 +64,7 @@ void Analyser::dumpSyntaxNode(SyntaxNode* node) const {
         lhsNodeAddressStream << lhsNodeAddress;
         std::string lhsNodeAddressStr = lhsNodeAddressStream.str();
 
-        std::cout << addressStr << " --> " << lhsNodeAddressStr << std::endl;
+        std::cout << "  " << addressStr << " --> " << lhsNodeAddressStr << std::endl;
     }
 
     if (node->rhs != nullptr) {
@@ -68,7 +75,7 @@ void Analyser::dumpSyntaxNode(SyntaxNode* node) const {
         rhsNodeAddressStream << rhsNodeAddress;
         std::string rhsNodeAddressStr = rhsNodeAddressStream.str();
 
-        std::cout << addressStr << " --> " << rhsNodeAddressStr << std::endl;
+        std::cout << "  " << addressStr << " --> " << rhsNodeAddressStr << std::endl;
     }
 }
 

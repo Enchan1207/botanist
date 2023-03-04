@@ -52,14 +52,24 @@ struct SyntaxNode {
     SyntaxNode() = default;
 
     /**
-     * @brief トークンの持つ内容をノードにコピーする
+     * @brief 値を渡してノードオブジェクトを初期化
      *
-     * @param token コピー元のトークン
+     * @param kind ノードの種類
+     * @param lhs 左辺
+     * @param rhs 右辺
+     * @param content ノードが持つ内容
+     * @param length contentの長さ
      */
-    void applyDataFromToken(const Token* token) {
-        content = token->content;
-        length = token->length;
-    }
+    SyntaxNode(const SyntaxNode::Kind kind,
+               SyntaxNode* lhs,
+               SyntaxNode* rhs,
+               const char* content,
+               size_t length)
+        : kind(kind),
+          lhs(lhs),
+          rhs(rhs),
+          content(content),
+          length(length){};
 };
 
 }  // namespace botanist
