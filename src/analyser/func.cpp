@@ -27,7 +27,6 @@ SyntaxNode* Analyser::createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs
 bool Analyser::consumeIf(const Token::Kind kind) {
     if (currentToken->element.kind == kind) {
         currentToken = currentToken->next;
-        ;
         return true;
     }
     return false;
@@ -47,7 +46,6 @@ bool Analyser::consumeIf(const char* content, const size_t length) {
     }
 
     currentToken = currentToken->next;
-    ;
     return true;
 }
 

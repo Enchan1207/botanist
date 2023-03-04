@@ -45,14 +45,12 @@ SyntaxNode* Analyser::unary() {
 SyntaxNode* Analyser::factor() {
     if (consumeIf("(", 1)) {
         auto* node = expression();
-        currentToken = currentToken->next;
-        ;  // 閉じ括弧の分
+        currentToken = currentToken->next;  // 閉じ括弧の分
         return node;
     }
 
     auto* numberNode = createNewNode(SyntaxNodeKind::Number, nullptr, nullptr, &(currentToken->element));
     currentToken = currentToken->next;
-    ;
     return numberNode;
 }
 
