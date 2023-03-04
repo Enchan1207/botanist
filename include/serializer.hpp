@@ -16,7 +16,7 @@ class Serializer {
     Serializer(/* args */);
     ~Serializer();
 
-    void serialize(SyntaxNode* rootNode);
+    void serialize(SyntaxNode* node);
 };
 
 }  // namespace botanist
