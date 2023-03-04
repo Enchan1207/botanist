@@ -63,7 +63,7 @@ int main(int argc, char const* argv[]) {
     }
     std::cout << std::endl;
 
-    // トークナイザの出力をアナライザに突っ込む
+    // トークンリストを構文ツリーに変換
     std::cout << "Analyse..." << std::endl;
     botanist::Analyser analyser(tokenizer.tokens());
     botanist::SyntaxNode* rootNode = analyser.analyse();
@@ -72,7 +72,10 @@ int main(int argc, char const* argv[]) {
         return 1;
     }
 
-    // アナライズされた構文ツリーを直列化し、スタックマシンで動かせるレベルまで持っていく
+    // 構文ツリーを直列化し、スタックマシンで動かせるレベルまで持っていく
+    std::cout << "Serialize..." << std::endl;
+    botanist::Serializer serializer;
+    serializer.serialize(rootNode);
 
     return 0;
 }

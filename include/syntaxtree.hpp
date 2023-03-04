@@ -5,7 +5,7 @@
 #ifndef BOTANIST_SYNTAX_TREE_H
 #define BOTANIST_SYNTAX_TREE_H
 
-#include <cstddef>
+#include <cstdint>
 
 #include "token.hpp"
 
