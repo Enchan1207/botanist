@@ -66,7 +66,13 @@ int main(int argc, char const* argv[]) {
     // トークナイザの出力をアナライザに突っ込む
     std::cout << "Analyse..." << std::endl;
     botanist::Analyser analyser(tokenizer.tokens());
-    analyser.analyse();
+    botanist::SyntaxNode* rootNode = analyser.analyse();
+    if (rootNode == nullptr) {
+        std::cerr << "Analyse failed" << std::endl;
+        return 1;
+    }
+
+    // アナライズされた構文ツリーを直列化し、スタックマシンで動かせるレベルまで持っていく
 
     return 0;
 }

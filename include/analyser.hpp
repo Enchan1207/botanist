@@ -105,8 +105,10 @@ class Analyser final {
 
     /**
      * @brief トークナイズされた数式から構文ツリーを生成
+     *
+     * @return SyntaxNode* ツリーのルートノード
      */
-    void analyse();
+    SyntaxNode* analyse();
 
     /**
      * @brief 構文ツリーをダンプ

@@ -9,9 +9,8 @@ namespace botanist {
 
 using SyntaxNodeKind = SyntaxNode::Kind;
 
-void Analyser::analyse() {
-    auto* rootNode = expression();
-    dumpSyntaxTree(rootNode);
+SyntaxNode* Analyser::analyse() {
+    return expression();
 }
 
 SyntaxNode* Analyser::expression() {
