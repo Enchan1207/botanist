@@ -11,6 +11,8 @@ target_sources(formula_parser PRIVATE
     tokenizer/tokenize.cpp
     parser/parser.cpp
     analyser/analyse.cpp
+    analyser/func.cpp
+    analyser/dump.cpp
 )
 target_include_directories(formula_parser PRIVATE
     ${PROJECT_SOURCE_DIR}/include
