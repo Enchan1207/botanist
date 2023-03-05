@@ -71,11 +71,12 @@ int main(int argc, char const* argv[]) {
         std::cerr << "Analyse failed" << std::endl;
         return 1;
     }
+    analyser.dumpSyntaxTree(rootNode);
 
     // 構文ツリーを直列化し、スタックマシンで動かせるレベルまで持っていく
     std::cout << "Serialize..." << std::endl;
     botanist::Serializer serializer;
-    serializer.serialize(rootNode);
+    auto* serializedNode = serializer.serializeTree(rootNode);
 
     return 0;
 }
