@@ -36,6 +36,11 @@ class Serializer {
      * @return collection2::Node<SyntaxNode*>* シリアライズされたツリーの先頭へのポインタ
      */
     collection2::Node<SyntaxNode*>* serializeTree(SyntaxNode* rootNode);
+
+    /**
+     * @brief 直列化されたノードリストをダンプ
+     */
+    void dumpSeralizedNodeList() const;
 };
 
 }  // namespace botanist

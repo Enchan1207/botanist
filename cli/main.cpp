@@ -78,6 +78,7 @@ int main(int argc, char const* argv[]) {
     std::cout << "Serialize..." << std::endl;
     botanist::Serializer serializer;
     auto* serializedNode = serializer.serializeTree(rootNode);
+    serializer.dumpSeralizedNodeList();
 
     // 評価器に渡す
     std::cout << "Evaluate..." << std::endl;
