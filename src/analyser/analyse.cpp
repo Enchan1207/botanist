@@ -16,31 +16,37 @@ SyntaxNode* Analyser::analyse() {
 SyntaxNode* Analyser::expression() {
     auto* node = unary();
 
-    if (forward("+", 1) && currentTokenNode != nullptr) {
-        // 加算ノードを構成
-        // TODO: 解析途中でプールがいっぱいになったらどうしよう?
-        auto newNode = createNewNode();
-        newNode->kind = SyntaxNodeKind::Add;
-        newNode->content = currentTokenNode->element.content;
-        newNode->length = currentTokenNode->element.length;
-        newNode->lhs = node;
+    while (true) {
+        if (forward("+", 1) && currentTokenNode != nullptr) {
+            // 加算ノードを構成
+            // TODO: 解析途中でプールがいっぱいになったらどうしよう?
+            auto newNode = createNewNode();
+            newNode->kind = SyntaxNodeKind::Add;
+            newNode->content = currentTokenNode->element.content;
+            newNode->length = currentTokenNode->element.length;
+            newNode->lhs = node;
 
-        // 右辺値は後で計算する
-        newNode->rhs = expression();
-        return newNode;
-    }
+            // 右辺値は後で計算する
+            newNode->rhs = unary();
+            node = newNode;
+            continue;
+        }
 
-    if (forward("-", 1) && currentTokenNode != nullptr) {
-        // 減算ノードを構成
-        auto newNode = createNewNode();
-        newNode->kind = SyntaxNodeKind::Subtract;
-        newNode->content = currentTokenNode->element.content;
-        newNode->length = currentTokenNode->element.length;
-        newNode->lhs = node;
+        if (forward("-", 1) && currentTokenNode != nullptr) {
+            // 減算ノードを構成
+            auto newNode = createNewNode();
+            newNode->kind = SyntaxNodeKind::Subtract;
+            newNode->content = currentTokenNode->element.content;
+            newNode->length = currentTokenNode->element.length;
+            newNode->lhs = node;
 
-        // 右辺値は後で計算する
-        newNode->rhs = expression();
-        return newNode;
+            // 右辺値は後で計算する
+            newNode->rhs = unary();
+            node = newNode;
+            continue;
+        }
+
+        break;
     }
 
     return node;
@@ -49,30 +55,36 @@ SyntaxNode* Analyser::expression() {
 SyntaxNode* Analyser::unary() {
     auto* node = factor();
 
-    if (forward("*", 1)) {
-        // 乗算ノードを構成
-        auto newNode = createNewNode();
-        newNode->kind = SyntaxNodeKind::Multiply;
-        newNode->content = currentTokenNode->element.content;
-        newNode->length = currentTokenNode->element.length;
-        newNode->lhs = node;
+    while (true) {
+        if (forward("*", 1)) {
+            // 乗算ノードを構成
+            auto newNode = createNewNode();
+            newNode->kind = SyntaxNodeKind::Multiply;
+            newNode->content = currentTokenNode->element.content;
+            newNode->length = currentTokenNode->element.length;
+            newNode->lhs = node;
 
-        // 右辺値は後で計算する
-        newNode->rhs = unary();
-        return newNode;
-    }
+            // 右辺値は後で計算する
+            newNode->rhs = factor();
+            node = newNode;
+            continue;
+        }
 
-    if (forward("/", 1)) {
-        // 除算ノードを構成
-        auto newNode = createNewNode();
-        newNode->kind = SyntaxNodeKind::Divide;
-        newNode->content = currentTokenNode->element.content;
-        newNode->length = currentTokenNode->element.length;
-        newNode->lhs = node;
+        if (forward("/", 1)) {
+            // 除算ノードを構成
+            auto newNode = createNewNode();
+            newNode->kind = SyntaxNodeKind::Divide;
+            newNode->content = currentTokenNode->element.content;
+            newNode->length = currentTokenNode->element.length;
+            newNode->lhs = node;
 
-        // 右辺値は後で計算する
-        newNode->rhs = unary();
-        return newNode;
+            // 右辺値は後で計算する
+            newNode->rhs = factor();
+            node = newNode;
+            continue;
+        }
+
+        break;
     }
 
     return node;
