@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include "evaluator.hpp"
 #include "parser.hpp"
 
 using namespace collection2;
@@ -21,13 +22,13 @@ int main(int argc, char const* argv[]) {
     // トークナイザに渡す
     std::cout << "Tokenize..." << std::endl;
     botanist::Tokenizer tokenizer(formula);
-    auto result = tokenizer.tokenize();
-    if (result != 0) {
-        for (size_t i = 0; i < result - 1; i++) {
+    auto tokenizationResult = tokenizer.tokenize();
+    if (tokenizationResult != 0) {
+        for (size_t i = 0; i < tokenizationResult - 1; i++) {
             std::cerr << ' ';
         }
         std::cerr << "\033[31;1m^\033[0m" << std::endl;
-        std::cerr << "Tokenize failed: unexpected character found at " << result << std::endl;
+        std::cerr << "Tokenize failed: unexpected character found at " << tokenizationResult << std::endl;
         return 1;
     }
     auto* tokenNode = tokenizer.tokens();
@@ -77,6 +78,12 @@ int main(int argc, char const* argv[]) {
     std::cout << "Serialize..." << std::endl;
     botanist::Serializer serializer;
     auto* serializedNode = serializer.serializeTree(rootNode);
+
+    // 評価器に渡す
+    std::cout << "Evaluate..." << std::endl;
+    botanist::FPEvaluator evaluator;
+    double calculationResult = evaluator.evaluate(serializedNode);
+    std::cout << "ans = " << calculationResult << std::endl;
 
     return 0;
 }

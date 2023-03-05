@@ -14,6 +14,7 @@ target_sources(formula_parser PRIVATE
     analyser/func.cpp
     analyser/dump.cpp
     serializer/serialize.cpp
+    evaluator/operate.cpp
 )
 target_include_directories(formula_parser PRIVATE
     ${PROJECT_SOURCE_DIR}/include
