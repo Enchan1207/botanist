@@ -6,6 +6,7 @@
 #define BOTANIST_PARSER_H
 
 #include "analyser.hpp"
+#include "serializer.hpp"
 #include "tokenizer.hpp"
 
 namespace botanist {

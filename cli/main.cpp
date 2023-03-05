@@ -63,10 +63,20 @@ int main(int argc, char const* argv[]) {
     }
     std::cout << std::endl;
 
-    // トークナイザの出力をアナライザに突っ込む
+    // トークンリストを構文ツリーに変換
     std::cout << "Analyse..." << std::endl;
     botanist::Analyser analyser(tokenizer.tokens());
-    analyser.analyse();
+    botanist::SyntaxNode* rootNode = analyser.analyse();
+    if (rootNode == nullptr) {
+        std::cerr << "Analyse failed" << std::endl;
+        return 1;
+    }
+    analyser.dumpSyntaxTree(rootNode);
+
+    // 構文ツリーを直列化し、スタックマシンで動かせるレベルまで持っていく
+    std::cout << "Serialize..." << std::endl;
+    botanist::Serializer serializer;
+    auto* serializedNode = serializer.serializeTree(rootNode);
 
     return 0;
 }
