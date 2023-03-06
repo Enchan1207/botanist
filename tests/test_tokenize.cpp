@@ -17,6 +17,13 @@ TEST(TokenizeTest, testTokenizeValidUnary) {
 
 /// @brief 不正な単項式
 TEST(TokenizeTest, testTokenizeInvalidUnary) {
+    // 変数には対応していない
+    EXPECT_EQ(Tokenizer("a").tokenize(), 1);
+    EXPECT_EQ(Tokenizer("bc").tokenize(), 1);
+
+    // 関数は使えない
+    EXPECT_EQ(Tokenizer("sin(45)").tokenize(), 1);
+
     // 小数点で始まってはいけない
     EXPECT_EQ(Tokenizer(".1").tokenize(), 1);
 
@@ -29,7 +36,7 @@ TEST(TokenizeTest, testTokenizeInvalidUnary) {
 
 /// @brief 多項式
 TEST(TokenizeTest, testTokenizePolynomial) {
-    // 単純な評価
+    // 四則演算
     EXPECT_EQ(Tokenizer("1+1").tokenize(), 0);
     EXPECT_EQ(Tokenizer("123-456").tokenize(), 0);
     EXPECT_EQ(Tokenizer("1.23*4.56").tokenize(), 0);
