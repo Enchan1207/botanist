@@ -17,12 +17,12 @@ target_sources(formula_parser PRIVATE
     serializer/dump.cpp
     evaluator/operate.cpp
 )
-target_include_directories(formula_parser PRIVATE
+target_include_directories(formula_parser PUBLIC
     ${PROJECT_SOURCE_DIR}/include
 )
 target_compile_options(formula_parser PRIVATE
     -Wall
 )
-target_link_libraries(formula_parser PRIVATE
+target_link_libraries(formula_parser PUBLIC
     collection2 
 )

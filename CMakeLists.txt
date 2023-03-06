@@ -31,3 +31,16 @@ FetchContent_MakeAvailable(collection2)
 #
 add_subdirectory(src)
 add_subdirectory(cli)
+
+
+#
+# unit testing configuration
+#
+option(FORMULA_PARSER_BUILD_TESTS "Enable testing of formula_parser" OFF)
+if(FORMULA_PARSER_BUILD_TESTS)
+    set(INSTALL_GTEST OFF)
+    enable_testing()
+    message(NOTICE "formula_parser: unit testing is enabled")
+    
+    add_subdirectory(tests)
+endif()
