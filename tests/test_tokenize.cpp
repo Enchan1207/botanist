@@ -10,6 +10,7 @@ using namespace botanist;
 
 /// @brief 正当な単項式
 TEST(TokenizeTest, testTokenizeValidUnary) {
+    EXPECT_EQ(Tokenizer("").tokenize(), 0);
     EXPECT_EQ(Tokenizer("1").tokenize(), 0);
     EXPECT_EQ(Tokenizer("123").tokenize(), 0);
     EXPECT_EQ(Tokenizer("1.23").tokenize(), 0);
