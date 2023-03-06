@@ -8,13 +8,23 @@
 
 using namespace botanist;
 
-/// @brief 単項式
-TEST(TokenizeTest, testTokenizeUnary) {
+/// @brief 正当な単項式
+TEST(TokenizeTest, testTokenizeValidUnary) {
     EXPECT_EQ(Tokenizer("1").tokenize(), 0);
     EXPECT_EQ(Tokenizer("123").tokenize(), 0);
     EXPECT_EQ(Tokenizer("1.23").tokenize(), 0);
+}
 
-    EXPECT_NE(Tokenizer("1.2.3").tokenize(), 0);
+/// @brief 不正な単項式
+TEST(TokenizeTest, testTokenizeInvalidUnary) {
+    // 小数点で始まってはいけない
+    EXPECT_EQ(Tokenizer(".1").tokenize(), 1);
+
+    // "1" までパースし、2文字目の '.' でエラーとなる
+    EXPECT_EQ(Tokenizer("1.").tokenize(), 2);
+
+    // "1.2" までパースし、4文字目の '.' でエラーとなる
+    EXPECT_EQ(Tokenizer("1.2.3").tokenize(), 4);
 }
 
 /// @brief 多項式 (加減算)
@@ -26,7 +36,8 @@ TEST(TokenizeTest, testTokenizeAddSub) {
     EXPECT_EQ(Tokenizer("1.23 + 4.56").tokenize(), 0);
     EXPECT_EQ(Tokenizer("1.23 - 4.56 + 7.89").tokenize(), 0);
 
-    // 数式としては正しくないが、トークナイズに成功する
+    // 数式としては正しくないが、トークナイズには成功する
+    // (トークナイザは数式の意味を理解していないため)
     EXPECT_EQ(Tokenizer("1.23+").tokenize(), 0);
     EXPECT_EQ(Tokenizer("4.56 -").tokenize(), 0);
     EXPECT_EQ(Tokenizer("7.89 + 0.12 -").tokenize(), 0);
@@ -34,8 +45,8 @@ TEST(TokenizeTest, testTokenizeAddSub) {
 
 /// @brief 多項式 (加減算) : トークン数確認
 TEST(TokenizeTest, testTokenizeAddSubAndCount) {
-    // 整数値
-    Tokenizer intPolynomialTokenizer("1 + 2 - 3 + 4 - 5");
+    // 整数値のみ
+    Tokenizer intPolynomialTokenizer("123 + 234-345 + 456-567");
     EXPECT_EQ(intPolynomialTokenizer.tokenize(), 0);
     auto* intTokenizedNode = intPolynomialTokenizer.tokens();
     int intNodeCount = 1;
@@ -45,8 +56,8 @@ TEST(TokenizeTest, testTokenizeAddSubAndCount) {
     }
     EXPECT_EQ(intNodeCount, 9);
 
-    // 実数値
-    Tokenizer realPolynomialTokenizer("1.2+3.4-5.6+7.8-9.0");
+    // 混在
+    Tokenizer realPolynomialTokenizer("12+3.4-56+7.8-90");
     EXPECT_EQ(realPolynomialTokenizer.tokenize(), 0);
     auto* realTokenizedNode = realPolynomialTokenizer.tokens();
     int realNodeCount = 1;
