@@ -1,5 +1,5 @@
 #
-# formula_parser tests
+# botanist tests
 #
 cmake_minimum_required(VERSION 3.0)
 
@@ -16,22 +16,22 @@ include(GoogleTest)
 ## 外部依存関係を追加...
 
 # テストターゲットの構成
-add_executable(formula_parser_test)
-target_sources(formula_parser_test PRIVATE
+add_executable(botanist_test)
+target_sources(botanist_test PRIVATE
     test_tokenize.cpp
     test_analyse.cpp
     test_evaluate.cpp
 )
-target_link_libraries(formula_parser_test PRIVATE
+target_link_libraries(botanist_test PRIVATE
     GTest::gtest_main
     collection2
-    formula_parser
+    botanist
 )
-target_include_directories(formula_parser_test
+target_include_directories(botanist_test
     PRIVATE
     ${PROJECT_SOURCE_DIR}/include
     ${GTEST_INCLUDE_DIRS}
 )
 
 # テストの実行
-gtest_discover_tests(formula_parser_test)
+gtest_discover_tests(botanist_test)

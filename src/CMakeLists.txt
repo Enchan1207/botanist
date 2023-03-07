@@ -1,12 +1,12 @@
 #
-# formula_parser sources
+# botanist sources
 #
 
 cmake_minimum_required(VERSION 3.0)
 
 ## configure library
-add_library(formula_parser)
-target_sources(formula_parser PRIVATE
+add_library(botanist)
+target_sources(botanist PRIVATE
     tokenizer/tokenize.cpp
     tokenizer/func.cpp
     tokenizer/dump.cpp
@@ -17,12 +17,12 @@ target_sources(formula_parser PRIVATE
     serializer/dump.cpp
     evaluator/operate.cpp
 )
-target_include_directories(formula_parser PUBLIC
+target_include_directories(botanist PUBLIC
     ${PROJECT_SOURCE_DIR}/include
 )
-target_compile_options(formula_parser PRIVATE
+target_compile_options(botanist PRIVATE
     -Wall
 )
-target_link_libraries(formula_parser PUBLIC
+target_link_libraries(botanist PUBLIC
     collection2 
 )
