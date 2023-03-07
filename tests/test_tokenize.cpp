@@ -33,6 +33,9 @@ TEST(TokenizeTest, testTokenizeInvalidUnary) {
 
     // "1.2" までパースし、4文字目の '.' でエラーとなる
     EXPECT_EQ(Tokenizer("1.2.3").tokenize(), 4);
+
+    // "1.2" までパースし、4文字目の '.' でエラーとなる
+    EXPECT_EQ(Tokenizer("1.2.3.4").tokenize(), 4);
 }
 
 /// @brief 多項式

@@ -40,15 +40,18 @@ size_t Tokenizer::tryParseAsNumber(char const* str) const {
     /**
      * @brief 数値パース状態
      */
-    enum class ParseState {
+    enum class ParseState : uint8_t {
         // パース開始
         Ready,
 
         // 実数部
         Real,
 
-        // 小数部
-        Fractional,
+        // 小数第一位
+        FirstDP,
+
+        // 小数第二位以下
+        LessDP,
 
         // 数値の終了
         Terminate
@@ -75,20 +78,30 @@ size_t Tokenizer::tryParseAsNumber(char const* str) const {
                 }
                 if (str[numberCursor] == '.') {
                     numberCursor++;
-                    currentState = ParseState::Fractional;
+                    currentState = ParseState::FirstDP;
                     continue;
                 }
                 currentState = ParseState::Terminate;
                 break;
 
-            case ParseState::Fractional:
+            case ParseState::FirstDP:
+                // 小数点の直後は数値でなければならない
+                if (isdigit(str[numberCursor])) {
+                    numberCursor++;
+                    currentState = ParseState::LessDP;
+                    continue;
+                }
+                // そうでなければ、小数点の直前まで戻ってパースを終了する
+                numberCursor--;
+                currentState = ParseState::Terminate;
+                break;
+
+            case ParseState::LessDP:
                 // 数値なら続ける
                 if (isdigit(str[numberCursor])) {
                     numberCursor++;
                     continue;
                 }
-                // 数値でなければ、一つ戻って処理を終える ("1." の場合に2が返ってはいけないため)
-                numberCursor--;
                 currentState = ParseState::Terminate;
                 break;
 
@@ -106,6 +119,7 @@ size_t Tokenizer::tryParseAsOperator(char const* str) const {
     const char* binaryOperators[] = {"<<", ">>", ""};
     const char** binaryOpPtr = binaryOperators;
     while (strcmp(*binaryOpPtr, "") != 0) {
+        // TODO: strの残り文字数管理しないと危ない (2文字まではいいけど、3文字の演算子・識別子をトークナイズできなくなる)
         const char buf[3] = {*str, *(str + 1), '\0'};
         if (strcmp(buf, *binaryOpPtr) == 0) {
             return 2;

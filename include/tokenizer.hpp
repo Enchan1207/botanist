@@ -8,6 +8,7 @@
 #include <cctype>
 #include <collection2/list.hpp>
 #include <cstddef>
+#include <cstdint>
 #include <cstring>
 
 #include "token.hpp"
