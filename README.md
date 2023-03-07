@@ -1,8 +1,8 @@
-# formula_parser
+# botanist
 
 ## Overview
 
-数式をパースして評価する
+Parse and evaluate formula
 
 ## License
 

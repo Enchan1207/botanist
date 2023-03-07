@@ -1,12 +1,12 @@
 #
-# formula_parser
+# botanist
 #
 
 #
 # project configuration
 #
 cmake_minimum_required(VERSION 3.0)
-project(formula_parser
+project(botanist
     VERSION 0.1.0
     DESCRIPTION "parse and evaluate formula"
     LANGUAGES C CXX
@@ -36,11 +36,11 @@ add_subdirectory(cli)
 #
 # unit testing configuration
 #
-option(FORMULA_PARSER_BUILD_TESTS "Enable testing of formula_parser" OFF)
+option(FORMULA_PARSER_BUILD_TESTS "Enable testing of botanist" OFF)
 if(FORMULA_PARSER_BUILD_TESTS)
     set(INSTALL_GTEST OFF)
     enable_testing()
-    message(NOTICE "formula_parser: unit testing is enabled")
+    message(NOTICE "botanist: unit testing is enabled")
     
     add_subdirectory(tests)
 endif()

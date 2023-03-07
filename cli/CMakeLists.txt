@@ -16,7 +16,7 @@ target_compile_options(main PRIVATE
     -Wall
 )
 target_link_libraries(main PRIVATE
-    formula_parser
+    botanist
     collection2
 )
 
@@ -32,6 +32,6 @@ target_compile_options(calc PRIVATE
     -Wall
 )
 target_link_libraries(calc PRIVATE
-    formula_parser
+    botanist
     collection2
 )

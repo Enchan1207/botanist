@@ -1,5 +1,5 @@
 //
-// formula_parser
+// botanist
 //
 
 #include <iostream>
