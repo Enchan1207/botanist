@@ -25,13 +25,16 @@ class Analyser final {
     SyntaxNode syntaxNodePool[64];
 
     /**
-     * @brief ノードプールから未割り当てのノードを探し、そのポインタを返す
+     * @brief ノードプールから未割り当てのノードを探し、発見できた場合は引数の内容を設定する
      *
-     * @return SyntaxNode* 使用可能なノードへのポインタ
-     *
+     * @param kind 設定するノード種別
+     * @param lhs 左辺値
+     * @param rhs 右辺値
+     * @return SyntaxNode* 構成されたノードへのポインタ
      * @note ノードプールがいっぱいになっている場合はnullptrが返ります。
+     * @note ノードの内容はメンバ `currentTokenNode` より取得されます。取得できない場合、そのノードは無効なものとしてマーク(`SyntaxNode::Kind::Invalid`)されます。
      */
-    SyntaxNode* createNewNode();
+    SyntaxNode* createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs = nullptr, SyntaxNode* rhs = nullptr);
 
     /**
      * @brief 今見ているトークンの種類と引数が一致するか調べる

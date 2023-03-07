@@ -15,6 +15,9 @@ namespace botanist {
 struct SyntaxNode {
     /// @brief ノードの種類
     enum class Kind : uint8_t {
+        /// @brief ツリー中に存在しないノード
+        Empty,
+
         /// @brief 加算
         Add,
 
@@ -30,12 +33,12 @@ struct SyntaxNode {
         /// @brief 数値
         Number,
 
-        /// @brief 無効な、またはツリー中に存在しないノード
+        /// @brief 無効なノード
         Invalid
     };
 
     /// @brief このノードの種類
-    Kind kind = Kind::Invalid;
+    Kind kind = Kind::Empty;
 
     /// @brief 左辺
     SyntaxNode* lhs = nullptr;
