@@ -69,7 +69,7 @@ bool Analyser::expect(const char* content, const size_t length) const {
 bool Analyser::forward(const Token::Kind kind) {
     auto result = expect(kind);
     if (result) {
-        currentTokenNode = currentTokenNode->next;
+        advanceTokenList();
     }
     return result;
 }
@@ -77,7 +77,7 @@ bool Analyser::forward(const Token::Kind kind) {
 bool Analyser::forward(const char* content, const size_t length) {
     auto result = expect(content, length);
     if (result) {
-        currentTokenNode = currentTokenNode->next;
+        advanceTokenList();
     }
     return result;
 }

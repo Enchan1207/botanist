@@ -39,7 +39,7 @@ bool Tokenizer::tryParse(char const* str, Token::Kind& kind, size_t& parsedToken
     }
 
     // どれにも当てはまらない
-    kind = Token::Kind::Invalid;
+    kind = Token::Kind::Empty;
     return false;
 }
 

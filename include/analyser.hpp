@@ -16,13 +16,19 @@ namespace botanist {
 class Analyser final {
    private:
     /// @brief 最初のトークンへのポインタ
-    const collection2::Node<Token>* firstTokenPtr;
+    collection2::Node<Token>* firstToken = nullptr;
 
     /// @brief アナライザが現在見ているトークンリストのノード
-    collection2::Node<Token>* currentTokenNode;
+    collection2::Node<Token>* currentTokenNode = nullptr;
 
     /// @brief 構文木を構成するノードのプール
     SyntaxNode syntaxNodePool[64];
+
+    /// @brief トークンリストがどこまで進んだか
+    collection2::list_size_t tokenIndex = 0;
+
+    /// @brief 構文解析結果のルートノード
+    SyntaxNode* root = nullptr;
 
     /**
      * @brief ノードプールから未割り当てのノードを探し、発見できた場合は引数の内容を設定する
@@ -32,7 +38,7 @@ class Analyser final {
      * @param rhs 右辺値
      * @return SyntaxNode* 構成されたノードへのポインタ
      * @note ノードプールがいっぱいになっている場合はnullptrが返ります。
-     * @note ノードの内容はメンバ `currentTokenNode` より取得されます。取得できない場合、そのノードは無効なものとしてマーク(`SyntaxNode::Kind::Invalid`)されます。
+     * @note ノードの内容はメンバ `currentTokenNode` より取得されます。
      */
     SyntaxNode* createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs = nullptr, SyntaxNode* rhs = nullptr);
 
@@ -51,7 +57,8 @@ class Analyser final {
      * @param length contentの文字数
      * @return bool トークンと一致しない場合はfalseが返ります。
      *
-     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理). また、第二引数はNULを考慮しません(`+`を評価したい場合は `expect("+", 1)` を呼び出してください)。
+     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理).
+     *       また、第二引数はNULを考慮しません(`+`を評価したい場合は `expect("+", 1)` を呼び出してください)。
      */
     bool expect(const char* content, const size_t length = 1) const;
 
@@ -70,9 +77,31 @@ class Analyser final {
      * @param length contentの文字数
      * @return bool トークンと一致しない場合はfalseが返ります。
      *
-     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理). また、第二引数はNULを考慮しません(`+`を評価したい場合は `forward("+", 1)` を呼び出してください)。
+     * @note 長さが一致している必要はありません(C++20におけるstarts_with関数相当の処理).
+     *       また、第二引数はNULを考慮しません(`+`を評価したい場合は `forward("+", 1)` を呼び出してください)。
      */
     bool forward(const char* content, const size_t length = 1);
+
+    /**
+     * @brief トークンカーソルを進める
+     */
+    void advanceTokenList() {
+        if (currentTokenNode == nullptr) {
+            return;
+        }
+        currentTokenNode = currentTokenNode->next;
+        tokenIndex++;
+    }
+
+    /**
+     * @brief ノードプールを初期化する
+     */
+    void initializeNodePool() {
+        for (size_t i = 0; i < 64; i++) {
+            auto* node = &(syntaxNodePool[i]);
+            node->kind = SyntaxNode::Kind::Empty;
+        }
+    }
 
     /**
      * @brief アナライザが見ているトークンを式の開始とみなしてパースを試みる
@@ -96,20 +125,26 @@ class Analyser final {
     SyntaxNode* factor();
 
    public:
-    /**
-     * @brief トークンリストを与えてアナライザを初期化
-     *
-     * @param firstToken 最初のトークンへのポインタ
-     */
-    explicit Analyser(collection2::Node<Token>* firstToken)
-        : firstTokenPtr(firstToken), currentTokenNode(firstToken){};
+    explicit Analyser() = default;
 
     /**
      * @brief トークナイズされた数式から構文木を生成
      *
-     * @return SyntaxNode* ツリーのルートノード
+     * @param token トークンリストの先頭
+     * @return collection2::list_size_t 正常にパースできなかったトークンの位置
+     * @note 生成に成功した場合は0が返ります。
      */
-    SyntaxNode* analyse();
+    collection2::list_size_t analyse(collection2::Node<Token>* token);
+
+    /**
+     * @brief 構文木のルートノードを取得
+     *
+     * @return SyntaxNode* 構文木のルートノード
+     * @note 直近で行われた構文木の生成に失敗した場合はnullptrが返ります。
+     */
+    SyntaxNode* rootNode() {
+        return root;
+    }
 
     /**
      * @brief 構文木をダンプ
