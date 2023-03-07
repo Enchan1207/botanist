@@ -5,16 +5,14 @@
 #ifndef BOTANIST_ANALYSER_H
 #define BOTANIST_ANALYSER_H
 
-#include <cctype>
 #include <collection2/list.hpp>
-#include <cstddef>
-#include <cstring>
 
 #include "syntaxtree.hpp"
 #include "token.hpp"
 
 namespace botanist {
 
+/// @brief トークナイズされた数式を解析し、構文木を形成する
 class Analyser final {
    private:
     /// @brief 最初のトークンへのポインタ
@@ -23,17 +21,20 @@ class Analyser final {
     /// @brief アナライザが現在見ているトークンリストのノード
     collection2::Node<Token>* currentTokenNode;
 
-    /// @brief 構文ツリーを構成するノードのプール
+    /// @brief 構文木を構成するノードのプール
     SyntaxNode syntaxNodePool[64];
 
     /**
-     * @brief ノードプールから未割り当てのノードを探し、そのポインタを返す
+     * @brief ノードプールから未割り当てのノードを探し、発見できた場合は引数の内容を設定する
      *
-     * @return SyntaxNode* 使用可能なノードへのポインタ
-     *
+     * @param kind 設定するノード種別
+     * @param lhs 左辺値
+     * @param rhs 右辺値
+     * @return SyntaxNode* 構成されたノードへのポインタ
      * @note ノードプールがいっぱいになっている場合はnullptrが返ります。
+     * @note ノードの内容はメンバ `currentTokenNode` より取得されます。取得できない場合、そのノードは無効なものとしてマーク(`SyntaxNode::Kind::Invalid`)されます。
      */
-    SyntaxNode* createNewNode();
+    SyntaxNode* createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs = nullptr, SyntaxNode* rhs = nullptr);
 
     /**
      * @brief 今見ているトークンの種類と引数が一致するか調べる
@@ -104,14 +105,14 @@ class Analyser final {
         : firstTokenPtr(firstToken), currentTokenNode(firstToken){};
 
     /**
-     * @brief トークナイズされた数式から構文ツリーを生成
+     * @brief トークナイズされた数式から構文木を生成
      *
      * @return SyntaxNode* ツリーのルートノード
      */
     SyntaxNode* analyse();
 
     /**
-     * @brief 構文ツリーをダンプ
+     * @brief 構文木をダンプ
      *
      * @param node 対象のノード
      */

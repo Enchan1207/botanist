@@ -1,5 +1,5 @@
 /// @file
-/// @brief 構文ツリー
+/// @brief 構文木
 ///
 
 #ifndef BOTANIST_SYNTAX_TREE_H
@@ -11,10 +11,13 @@
 
 namespace botanist {
 
-/// @brief 構文ツリーのノード
+/// @brief 構文木のノード
 struct SyntaxNode {
     /// @brief ノードの種類
     enum class Kind : uint8_t {
+        /// @brief ツリー中に存在しないノード
+        Empty,
+
         /// @brief 加算
         Add,
 
@@ -30,12 +33,12 @@ struct SyntaxNode {
         /// @brief 数値
         Number,
 
-        /// @brief 無効な、またはツリー中に存在しないノード
+        /// @brief 無効なノード
         Invalid
     };
 
     /// @brief このノードの種類
-    Kind kind = Kind::Invalid;
+    Kind kind = Kind::Empty;
 
     /// @brief 左辺
     SyntaxNode* lhs = nullptr;

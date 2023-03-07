@@ -6,13 +6,14 @@
 #define BOTANIST_TOKEN_H
 
 #include <cstddef>
+#include <cstdint>
 
 namespace botanist {
 
 /// @brief 式を構成するトークン
 struct Token {
     /// @brief トークンの種類
-    enum class Kind {
+    enum class Kind : uint8_t {
         /// @brief 数値
         Number,
 
@@ -47,7 +48,8 @@ struct Token {
      * @param content トークンが持つ内容
      * @param length contentの長さ
      */
-    Token(Kind kind, const char* content, size_t length) : kind(kind), content(content), length(length){};
+    Token(Kind kind, const char* content, size_t length)
+        : kind(kind), content(content), length(length){};
 };
 
 }  // namespace botanist

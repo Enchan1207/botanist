@@ -43,6 +43,7 @@ TEST(AnalyseTest, testAnalyseInvalidFormula) {
 
     EXPECT_EQ(rootNode->kind, SyntaxNode::Kind::Multiply);
     EXPECT_EQ(rootNode->lhs->kind, SyntaxNode::Kind::Number);
+    EXPECT_EQ(rootNode->rhs, nullptr);
 }
 
 /// @brief 無を解析

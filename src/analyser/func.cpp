@@ -3,21 +3,39 @@
 ///
 
 #include "analyser.hpp"
-#include "syntaxtree.hpp"
 
 namespace botanist {
 
-SyntaxNode* Analyser::createNewNode() {
+SyntaxNode* Analyser::createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs, SyntaxNode* rhs) {
+    // フリーなノードを探す
+    SyntaxNode* freeNode = nullptr;
     // TODO: 要素数ハードコードの削除
     for (size_t i = 0; i < 64; i++) {
-        // フリーなノードを探し、値を入れる
-        auto* targetNodePtr = &(syntaxNodePool[i]);
-        if (targetNodePtr->kind != SyntaxNode::Kind::Invalid) {
+        auto* node = &(syntaxNodePool[i]);
+        if (node->kind != SyntaxNode::Kind::Empty) {
             continue;
         }
-        return targetNodePtr;
+        freeNode = node;
+        break;
     }
-    return nullptr;
+
+    if (freeNode == nullptr) {
+        // 空きがなかった
+        return nullptr;
+    }
+
+    freeNode->kind = kind;
+    freeNode->lhs = lhs;
+    freeNode->rhs = rhs;
+    if (currentTokenNode != nullptr) {
+        auto token = currentTokenNode->element;
+        freeNode->content = token.content;
+        freeNode->length = token.length;
+    } else {
+        freeNode->content = nullptr;
+        freeNode->length = 0;
+    }
+    return freeNode;
 }
 
 bool Analyser::expect(const Token::Kind kind) const {

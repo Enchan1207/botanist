@@ -2,15 +2,11 @@
 /// @brief 演算処理
 ///
 
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-
 #include "evaluator.hpp"
 
 namespace botanist {
 
-bool FPEvaluator::makeValueFromSyntaxNode(const SyntaxNode* node, double& value) const {
+bool FPEvaluator::getValueFromNode(const SyntaxNode* node, double& value) const {
     // 数値ノードを期待する
     if (node == nullptr || node->kind != SyntaxNode::Kind::Number) {
         return false;
@@ -39,7 +35,7 @@ double FPEvaluator::evaluate(collection2::Node<SyntaxNode*>* node) {
 
         // 数値ならスタックにpush
         double value = 0;
-        if (makeValueFromSyntaxNode(syntaxNode, value)) {
+        if (getValueFromNode(syntaxNode, value)) {
             calcStack.push(value);
             currentNode = currentNode->next;
             continue;

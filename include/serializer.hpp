@@ -1,5 +1,5 @@
 /// @file
-/// @brief 構文ツリーの直列化
+/// @brief 構文木の直列化
 ///
 
 #ifndef BOTANIST_SERIALIZER_H
@@ -11,6 +11,7 @@
 
 namespace botanist {
 
+/// @brief 構文木をスタックマシンが実行可能な形に変換する
 class Serializer {
    private:
     /// @brief 構文ノードリストを管理する配列
@@ -30,7 +31,7 @@ class Serializer {
     Serializer() : syntaxNodeList(internalNodesData, sizeof(internalNodesData) / sizeof(internalNodesData[0])){};
 
     /**
-     * @brief 構文ツリーをスタックマシンで処理できる形に並べ替え、先頭へのポインタを返す
+     * @brief 構文木をスタックマシンで処理できる形に並べ替え、先頭へのポインタを返す
      *
      * @param node ツリーのルートノード
      * @return collection2::Node<SyntaxNode*>* シリアライズされたツリーの先頭へのポインタ
