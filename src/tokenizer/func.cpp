@@ -1,10 +1,17 @@
 /// @file
-/// @brief 数式構成要素のパース
+/// @brief 補助関数
 ///
 
 #include "tokenizer.hpp"
 
 namespace botanist {
+
+void Tokenizer::initializeTokenList() {
+    auto result = collection2::OperationResult::Success;
+    while (result == collection2::OperationResult::Success) {
+        result = tokenList.pop(nullptr);
+    }
+}
 
 bool Tokenizer::tryParse(char const* str, Token::Kind& kind, size_t& parsedTokenLength) const {
     // 演算子

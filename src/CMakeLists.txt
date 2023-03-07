@@ -7,8 +7,9 @@ cmake_minimum_required(VERSION 3.0)
 ## configure library
 add_library(formula_parser)
 target_sources(formula_parser PRIVATE
-    tokenizer/parse_elements.cpp
     tokenizer/tokenize.cpp
+    tokenizer/func.cpp
+    tokenizer/dump.cpp
     parser/parser.cpp
     analyser/analyse.cpp
     analyser/func.cpp

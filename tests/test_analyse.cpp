@@ -14,8 +14,8 @@ using namespace botanist;
 /// @brief 正当な単項式
 TEST(AnalyseTest, testAnalyseValidFormula) {
     // 先にトークナイザ側でトークン列を生成しておく必要がある
-    Tokenizer tokenizer("1.23-45.6");
-    EXPECT_EQ(tokenizer.tokenize(), 0);
+    Tokenizer tokenizer;
+    EXPECT_EQ(tokenizer.tokenize("1.23-45.6"), 0);
 
     Analyser analyser(tokenizer.tokens());
     const auto* rootNode = analyser.analyse();
@@ -35,8 +35,8 @@ TEST(AnalyseTest, testAnalyseValidFormula) {
 
 /// @brief 不正な単項式
 TEST(AnalyseTest, testAnalyseInvalidFormula) {
-    Tokenizer tokenizer("12*");
-    EXPECT_EQ(tokenizer.tokenize(), 0);
+    Tokenizer tokenizer;
+    EXPECT_EQ(tokenizer.tokenize("12*"), 0);
 
     Analyser analyser(tokenizer.tokens());
     const auto* rootNode = analyser.analyse();
@@ -48,8 +48,8 @@ TEST(AnalyseTest, testAnalyseInvalidFormula) {
 
 /// @brief 無を解析
 TEST(AnalyseTest, testAnalyseEmptyTokens) {
-    Tokenizer tokenizer("");
-    EXPECT_EQ(tokenizer.tokenize(), 0);
+    Tokenizer tokenizer;
+    EXPECT_EQ(tokenizer.tokenize(""), 0);
 
     Analyser analyser(tokenizer.tokens());
     const auto* rootNode = analyser.analyse();
