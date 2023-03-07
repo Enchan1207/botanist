@@ -21,8 +21,8 @@ int main(int argc, char const* argv[]) {
 
     // トークナイザに渡す
     std::cout << "Tokenize..." << std::endl;
-    botanist::Tokenizer tokenizer(formula);
-    auto tokenizationResult = tokenizer.tokenize();
+    botanist::Tokenizer tokenizer;
+    auto tokenizationResult = tokenizer.tokenize(formula);
     if (tokenizationResult != 0) {
         for (size_t i = 0; i < tokenizationResult - 1; i++) {
             std::cerr << ' ';
