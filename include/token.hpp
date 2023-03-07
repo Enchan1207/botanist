@@ -14,6 +14,9 @@ namespace botanist {
 struct Token {
     /// @brief トークンの種類
     enum class Kind : uint8_t {
+        /// @brief リスト内に存在しないトークン
+        Empty,
+
         /// @brief 数値
         Number,
 
@@ -26,12 +29,12 @@ struct Token {
         /// @brief それ以外のシンボル
         Symbol,
 
-        /// @brief 無効なトークン
-        Invalid
+        /// @brief トークン列の終端
+        Terminator
     };
 
     /// @brief このトークンの種類
-    Kind kind = Kind::Invalid;
+    Kind kind = Kind::Empty;
 
     /// @brief トークンが持つ内容
     const char* content = nullptr;

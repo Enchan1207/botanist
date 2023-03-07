@@ -134,5 +134,4 @@ TEST(TokenizeTest, testTooLongToken) {
     Tokenizer tokenizer;
     auto result = tokenizer.tokenize(tooLongToken);
     EXPECT_NE(result, 0);
-    std::cerr << "tokenize failed: at char " << result << std::endl;
 }

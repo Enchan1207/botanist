@@ -2,34 +2,72 @@
 /// @brief 構文木構成
 ///
 
+#include <iostream>
+
 #include "analyser.hpp"
 
 namespace botanist {
 
 using SyntaxNodeKind = SyntaxNode::Kind;
 
-SyntaxNode* Analyser::analyse() {
-    return expression();
+collection2::list_size_t Analyser::analyse(collection2::Node<Token>* token) {
+    // 状態をリセット
+    tokenIndex = 0;
+    initializeNodePool();
+    firstToken = token;
+    currentTokenNode = token;
+
+    // 構文木生成
+    root = expression();
+
+    // 生成中に不正なトークンを踏んだ
+    if (root == nullptr) {
+        return tokenIndex > 0 ? tokenIndex : 1;
+    }
+
+    // トークンを使い切っていない
+    if (currentTokenNode != nullptr) {
+        root = nullptr;
+        return tokenIndex > 0 ? tokenIndex : 1;
+    }
+
+    return 0;
 }
 
 SyntaxNode* Analyser::expression() {
     auto* node = unary();
 
-    while (true) {
+    bool canLoopContinue = true;
+    while (canLoopContinue) {
         if (forward("+", 1)) {
+            // 右辺が計算できることを確認
+            auto* rhs = unary();
+            if (rhs == nullptr) {
+                node = nullptr;
+                canLoopContinue = false;
+                continue;
+            }
+
             // 加算ノードを構成
-            // TODO: 解析途中でプールがいっぱいになったらどうしよう?
-            node = createNewNode(SyntaxNodeKind::Add, node, unary());
+            node = createNewNode(SyntaxNodeKind::Add, node, rhs);
             continue;
         }
 
         if (forward("-", 1)) {
+            // 右辺が計算できることを確認
+            auto* rhs = unary();
+            if (rhs == nullptr) {
+                node = nullptr;
+                canLoopContinue = false;
+                continue;
+            }
+
             // 減算ノードを構成
-            node = createNewNode(SyntaxNodeKind::Subtract, node, unary());
+            node = createNewNode(SyntaxNodeKind::Subtract, node, rhs);
             continue;
         }
 
-        break;
+        canLoopContinue = false;
     }
 
     return node;
@@ -38,20 +76,37 @@ SyntaxNode* Analyser::expression() {
 SyntaxNode* Analyser::unary() {
     auto* node = factor();
 
-    while (true) {
+    bool canLoopContinue = true;
+    while (canLoopContinue) {
         if (forward("*", 1)) {
+            // 右辺が計算できることを確認
+            auto* rhs = factor();
+            if (rhs == nullptr) {
+                node = nullptr;
+                canLoopContinue = false;
+                continue;
+            }
+
             // 乗算ノードを構成
-            node = createNewNode(SyntaxNodeKind::Multiply, node, factor());
+            node = createNewNode(SyntaxNodeKind::Multiply, node, rhs);
             continue;
         }
 
         if (forward("/", 1)) {
+            // 右辺が計算できることを確認
+            auto* rhs = factor();
+            if (rhs == nullptr) {
+                node = nullptr;
+                canLoopContinue = false;
+                continue;
+            }
+
             // 除算ノードを構成
-            node = createNewNode(SyntaxNodeKind::Divide, node, factor());
+            node = createNewNode(SyntaxNodeKind::Divide, node, rhs);
             continue;
         }
 
-        break;
+        canLoopContinue = false;
     }
 
     return node;
@@ -68,9 +123,9 @@ SyntaxNode* Analyser::factor() {
         return node;
     }
 
-    if (currentTokenNode != nullptr) {
+    if (expect(Token::Kind::Number)) {
         auto newNode = createNewNode(SyntaxNodeKind::Number);
-        currentTokenNode = currentTokenNode->next;
+        advanceTokenList();
         return newNode;
     }
 

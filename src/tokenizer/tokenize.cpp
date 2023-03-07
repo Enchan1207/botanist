@@ -18,7 +18,7 @@ collection2::list_size_t Tokenizer::tokenize(char const* formula) {
         }
 
         // なんらかのトークンにマッチするか調べる
-        Token::Kind expectedKind = Token::Kind::Invalid;
+        Token::Kind expectedKind = Token::Kind::Empty;
         size_t expectedLength = 0;
         if (!tryParse(formulaPtr, expectedKind, expectedLength)) {
             isLastTokenizationSucceeded = false;

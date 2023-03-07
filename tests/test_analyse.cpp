@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 
+#include <collection2/list.hpp>
 #include <cstring>
 
 #include "analyser.hpp"
@@ -17,8 +18,9 @@ TEST(AnalyseTest, testAnalyseValidFormula) {
     Tokenizer tokenizer;
     EXPECT_EQ(tokenizer.tokenize("1.23-45.6"), 0);
 
-    Analyser analyser(tokenizer.tokens());
-    const auto* rootNode = analyser.analyse();
+    Analyser analyser;
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    const auto* rootNode = analyser.rootNode();
 
     // 各ノードが想定通りの構造になっているか
     EXPECT_EQ(rootNode->kind, SyntaxNode::Kind::Subtract);
@@ -34,16 +36,23 @@ TEST(AnalyseTest, testAnalyseValidFormula) {
 }
 
 /// @brief 不正な単項式
-TEST(AnalyseTest, testAnalyseInvalidFormula) {
+TEST(AnalyseTest, testAnalyseInvalidUnary) {
     Tokenizer tokenizer;
     EXPECT_EQ(tokenizer.tokenize("12*"), 0);
 
-    Analyser analyser(tokenizer.tokens());
-    const auto* rootNode = analyser.analyse();
+    Analyser analyser;
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 2);
+    EXPECT_EQ(analyser.rootNode(), nullptr);
+}
 
-    EXPECT_EQ(rootNode->kind, SyntaxNode::Kind::Multiply);
-    EXPECT_EQ(rootNode->lhs->kind, SyntaxNode::Kind::Number);
-    EXPECT_EQ(rootNode->rhs, nullptr);
+/// @brief 不正な数式
+TEST(AnalyseTest, testAnalyseInvalidFormula) {
+    Tokenizer tokenizer;
+    EXPECT_EQ(tokenizer.tokenize("1++1"), 0);
+
+    Analyser analyser;
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 2);
+    EXPECT_EQ(analyser.rootNode(), nullptr);
 }
 
 /// @brief 無を解析
@@ -51,7 +60,71 @@ TEST(AnalyseTest, testAnalyseEmptyTokens) {
     Tokenizer tokenizer;
     EXPECT_EQ(tokenizer.tokenize(""), 0);
 
-    Analyser analyser(tokenizer.tokens());
-    const auto* rootNode = analyser.analyse();
+    Analyser analyser;
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 1);
+    const auto* rootNode = analyser.rootNode();
     EXPECT_EQ(rootNode, nullptr);
+}
+
+/// @brief さまざまな長さの数式を連続で構文木に変換する
+TEST(AnalyseTest, testContinuousAnalysis) {
+    Analyser analyser;
+    Tokenizer tokenizer;
+
+    EXPECT_EQ(tokenizer.tokenize("1.23"), 0);
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    EXPECT_NE(analyser.rootNode(), nullptr);
+
+    EXPECT_EQ(tokenizer.tokenize("12+"), 0);
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 2);
+    EXPECT_EQ(analyser.rootNode(), nullptr);
+
+    EXPECT_EQ(tokenizer.tokenize("1234+5678"), 0);
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    EXPECT_NE(analyser.rootNode(), nullptr);
+
+    EXPECT_EQ(tokenizer.tokenize("(12+(34*56)"), 0);
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 8);
+    EXPECT_EQ(analyser.rootNode(), nullptr);
+
+    EXPECT_EQ(tokenizer.tokenize("(12+(34/56)+78"), 0);
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 10);
+    EXPECT_EQ(analyser.rootNode(), nullptr);
+
+    EXPECT_EQ(tokenizer.tokenize("12)"), 0);
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 1);
+    EXPECT_EQ(analyser.rootNode(), nullptr);
+
+    EXPECT_EQ(tokenizer.tokenize("123++456"), 0);
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 2);
+    EXPECT_EQ(analyser.rootNode(), nullptr);
+
+    EXPECT_EQ(tokenizer.tokenize("1+1*2-4"), 0);
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    EXPECT_NE(analyser.rootNode(), nullptr);
+
+    EXPECT_EQ(tokenizer.tokenize("(812*46999)+17777 / 0"), 0);
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    EXPECT_NE(analyser.rootNode(), nullptr);
+}
+
+/// @brief プールが埋まるほど複雑な数式
+TEST(AnalyseTest, testTooLongFormula) {
+    // 1+1+...+1+1 と続くトークンリストを生成する
+    constexpr size_t tokenLength = 129;  // must be odd number
+    collection2::Node<Token> internalTokensData[tokenLength];
+    collection2::List<Token> tokenList(internalTokensData, tokenLength);
+    for (size_t i = 0; i < tokenLength; i++) {
+        if (i % 2 == 0) {
+            tokenList.append(Token(Token::Kind::Number, "1", 1));
+        } else {
+            tokenList.append(Token(Token::Kind::Operator, "+", 1));
+        }
+    }
+
+    Analyser analyser;
+    auto result = analyser.analyse(tokenList.head());
+    EXPECT_NE(result, 0);
+    EXPECT_EQ(analyser.rootNode(), nullptr);
+    std::cerr << "analyse failed: at token # " << result << std::endl;
 }

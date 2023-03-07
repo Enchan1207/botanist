@@ -35,12 +35,13 @@ int main(int argc, char const* argv[]) {
 
     // トークンリストを構文木に変換
     std::cout << "Analyse..." << std::endl;
-    botanist::Analyser analyser(tokenizer.tokens());
-    botanist::SyntaxNode* rootNode = analyser.analyse();
-    if (rootNode == nullptr) {
+    botanist::Analyser analyser;
+    auto analysisResult = analyser.analyse(tokenizer.tokens());
+    if (analysisResult != 0) {
         std::cerr << "Analyse failed" << std::endl;
         return 1;
     }
+    botanist::SyntaxNode* rootNode = analyser.rootNode();
     analyser.dumpSyntaxTree(rootNode);
 
     // 構文木を直列化し、スタックマシンで動かせるレベルまで持っていく

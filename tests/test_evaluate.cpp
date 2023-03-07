@@ -17,8 +17,9 @@ using namespace botanist;
 TEST(EvaluateTest, testAnalyseIntFormula) {
     Tokenizer tokenizer;
     EXPECT_EQ(tokenizer.tokenize("(((12+34) - 56*78)-78)/44+100"), 0);
-    Analyser analyser(tokenizer.tokens());
-    auto* rootNode = analyser.analyse();
+    Analyser analyser;
+    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    auto* rootNode = analyser.rootNode();
     EXPECT_NE(rootNode, nullptr);
     Serializer serializer;
     auto* serializedNode = serializer.serializeTree(rootNode);

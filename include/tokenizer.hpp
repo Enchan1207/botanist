@@ -83,8 +83,8 @@ class Tokenizer final {
      * @brief 与えられた数式を、数値や演算子、括弧等のトークンに分割する
      * @param formula 数式
      *
-     * @return collection2::list_size_t 正常にパースできなかった場合の位置
-     * @note トークナイズに成功した場合は0、失敗した場合は何文字目で失敗したかが返ります。
+     * @return collection2::list_size_t 正常にパースできなかった式の位置
+     * @note トークナイズに成功した場合は0が返ります。
      */
     collection2::list_size_t tokenize(char const* formula);
 
