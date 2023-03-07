@@ -10,7 +10,6 @@ target_sources(formula_parser PRIVATE
     tokenizer/tokenize.cpp
     tokenizer/func.cpp
     tokenizer/dump.cpp
-    parser/parser.cpp
     analyser/analyse.cpp
     analyser/func.cpp
     analyser/dump.cpp

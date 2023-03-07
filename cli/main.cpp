@@ -4,7 +4,6 @@
 
 #include <iostream>
 
-#include "evaluator.hpp"
 #include "parser.hpp"
 
 using namespace collection2;
@@ -38,7 +37,7 @@ int main(int argc, char const* argv[]) {
     botanist::Analyser analyser;
     auto analysisResult = analyser.analyse(tokenizer.tokens());
     if (analysisResult != 0) {
-        std::cerr << "Analyse failed" << std::endl;
+        std::cerr << "Analyse failed: " << analysisResult << std::endl;
         return 1;
     }
     botanist::SyntaxNode* rootNode = analyser.rootNode();
