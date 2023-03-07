@@ -2,6 +2,7 @@
 /// @brief 直列化された構文ノードリストのダンプ
 ///
 
+#include <cstring>
 #include <iostream>
 
 #include "serializer.hpp"

@@ -14,6 +14,7 @@
 
 namespace botanist {
 
+/// @brief 数式を項や演算子、括弧など意味のある単位に分割する
 class Tokenizer final {
    private:
     /// @brief 数式

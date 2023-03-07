@@ -3,7 +3,6 @@
 ///
 
 #include "analyser.hpp"
-#include "syntaxtree.hpp"
 
 namespace botanist {
 

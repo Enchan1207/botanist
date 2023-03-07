@@ -1,9 +1,8 @@
 /// @file
-/// @brief 構文ツリー構成
+/// @brief 構文木構成
 ///
 
 #include "analyser.hpp"
-#include "syntaxtree.hpp"
 
 namespace botanist {
 

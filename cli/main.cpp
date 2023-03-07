@@ -64,7 +64,7 @@ int main(int argc, char const* argv[]) {
     }
     std::cout << std::endl;
 
-    // トークンリストを構文ツリーに変換
+    // トークンリストを構文木に変換
     std::cout << "Analyse..." << std::endl;
     botanist::Analyser analyser(tokenizer.tokens());
     botanist::SyntaxNode* rootNode = analyser.analyse();
@@ -74,7 +74,7 @@ int main(int argc, char const* argv[]) {
     }
     analyser.dumpSyntaxTree(rootNode);
 
-    // 構文ツリーを直列化し、スタックマシンで動かせるレベルまで持っていく
+    // 構文木を直列化し、スタックマシンで動かせるレベルまで持っていく
     std::cout << "Serialize..." << std::endl;
     botanist::Serializer serializer;
     auto* serializedNode = serializer.serializeTree(rootNode);

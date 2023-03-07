@@ -1,5 +1,5 @@
 /// @file
-/// @brief 構文ツリー
+/// @brief 構文木
 ///
 
 #ifndef BOTANIST_SYNTAX_TREE_H
@@ -11,7 +11,7 @@
 
 namespace botanist {
 
-/// @brief 構文ツリーのノード
+/// @brief 構文木のノード
 struct SyntaxNode {
     /// @brief ノードの種類
     enum class Kind : uint8_t {

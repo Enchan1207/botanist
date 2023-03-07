@@ -5,16 +5,14 @@
 #ifndef BOTANIST_ANALYSER_H
 #define BOTANIST_ANALYSER_H
 
-#include <cctype>
 #include <collection2/list.hpp>
-#include <cstddef>
-#include <cstring>
 
 #include "syntaxtree.hpp"
 #include "token.hpp"
 
 namespace botanist {
 
+/// @brief トークナイズされた数式を解析し、構文木を形成する
 class Analyser final {
    private:
     /// @brief 最初のトークンへのポインタ
@@ -23,7 +21,7 @@ class Analyser final {
     /// @brief アナライザが現在見ているトークンリストのノード
     collection2::Node<Token>* currentTokenNode;
 
-    /// @brief 構文ツリーを構成するノードのプール
+    /// @brief 構文木を構成するノードのプール
     SyntaxNode syntaxNodePool[64];
 
     /**
@@ -104,14 +102,14 @@ class Analyser final {
         : firstTokenPtr(firstToken), currentTokenNode(firstToken){};
 
     /**
-     * @brief トークナイズされた数式から構文ツリーを生成
+     * @brief トークナイズされた数式から構文木を生成
      *
      * @return SyntaxNode* ツリーのルートノード
      */
     SyntaxNode* analyse();
 
     /**
-     * @brief 構文ツリーをダンプ
+     * @brief 構文木をダンプ
      *
      * @param node 対象のノード
      */

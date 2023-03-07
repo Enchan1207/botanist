@@ -1,14 +1,14 @@
 
 /// @file
-/// @brief 構文ツリーのダンプ
+/// @brief 構文木のダンプ
 ///
 
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <string>
 
 #include "analyser.hpp"
-#include "syntaxtree.hpp"
 
 namespace botanist {
 

@@ -1,5 +1,5 @@
 /// @file
-/// @brief 構文ツリーの直列化
+/// @brief 構文木の直列化
 ///
 
 #include "serializer.hpp"
