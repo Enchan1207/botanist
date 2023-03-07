@@ -31,38 +31,7 @@ int main(int argc, char const* argv[]) {
         std::cerr << "Tokenize failed: unexpected character found at " << tokenizationResult << std::endl;
         return 1;
     }
-    auto* tokenNode = tokenizer.tokens();
-
-    while (tokenNode != nullptr) {
-        const auto token = tokenNode->element;
-
-        // トークンの種類によって色を変える
-        switch (token.kind) {
-            case TokenKind::Number:
-                std::cout << "\033[0m";
-                break;
-
-            case TokenKind::Operator:
-                std::cout << "\033[32;1m";
-                break;
-
-            case TokenKind::Bracket:
-                std::cout << "\033[34;1m";
-                break;
-
-            default:
-                std::cout << "\033[0m";
-                break;
-        }
-
-        // トークンの内容
-        char contentBuffer[32] = {0};
-        memcpy(contentBuffer, token.content, token.length);
-        std::cout << contentBuffer << "\033[0m";
-
-        tokenNode = tokenNode->next;
-    }
-    std::cout << std::endl;
+    tokenizer.dumpTokenList();
 
     // トークンリストを構文木に変換
     std::cout << "Analyse..." << std::endl;

@@ -97,6 +97,13 @@ class Tokenizer final {
     collection2::Node<Token>* tokens() const {
         return isLastTokenizationSucceeded ? tokenList.head() : nullptr;
     }
+
+    /**
+     * @brief トークンリストのダンプ
+     *
+     * @param colorlized 出力にANSIエスケープシーケンスによる色付けを行うか
+     */
+    void dumpTokenList(bool colorlized = true) const;
 };
 
 }  // namespace botanist
