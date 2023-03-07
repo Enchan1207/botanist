@@ -1,4 +1,6 @@
-# botanist
+<img style="max-width: 700px;" src="banner.png">
+
+[![CMake](https://github.com/Enchan1207/formula_parser/actions/workflows/cmake.yml/badge.svg)](https://github.com/Enchan1207/formula_parser/actions/workflows/cmake.yml)
 
 ## Overview
 
