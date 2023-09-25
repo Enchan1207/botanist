@@ -5,7 +5,7 @@
 #
 # project configuration
 #
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 project(botanist
     VERSION 0.1.0
     DESCRIPTION "parse and evaluate formula"
