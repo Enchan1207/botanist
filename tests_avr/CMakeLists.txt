@@ -38,4 +38,5 @@ endmacro()
 
 # テストターゲットの構成
 add_test_target(test_analyse.cpp)
+add_test_target(test_tokenize.cpp)
 add_test_target(test_evaluate.cpp)
