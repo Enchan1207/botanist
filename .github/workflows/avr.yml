@@ -39,7 +39,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DAVR_SERIAL_BUILD_TESTS=ON -DAVR_MCU=${{matrix.mcu}}
+          cmake .. -DFORMULA_PARSER_BUILD_TESTS=ON -DFORMULA_PARSER_HEADLESS=ON -DAVR_MCU=${{matrix.mcu}}
 
       - name: build
         working-directory: ${{github.workspace}}/build
