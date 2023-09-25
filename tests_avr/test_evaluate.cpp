@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "analyser.hpp"
-#include "evaluator.hpp"
+#include "evaluator/double.hpp"
 #include "serializer.hpp"
 #include "testcase.hpp"
 #include "tokenizer.hpp"
@@ -27,7 +27,7 @@ TEST(testAnalyseIntFormula) {
     Serializer serializer;
     auto* serializedNode = serializer.serializeTree(rootNode);
 
-    FPEvaluator evaluator;
+    DoubleEvaluator evaluator;
     auto evalResult = static_cast<int>(evaluator.evaluate(serializedNode));
     EXPECT_EQ(evalResult, 0, result);  // (((12+34)-56*78)-78)/44+100=0
 
