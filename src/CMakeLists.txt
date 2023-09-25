@@ -12,7 +12,7 @@ target_sources(botanist PRIVATE
     analyser/analyse.cpp
     analyser/func.cpp
     serializer/serialize.cpp
-    evaluator/operate.cpp
+    evaluator/double.cpp
 )
 
 if(!FORMULA_PARSER_HEADLESS)

@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include "evaluator/double.hpp"
 #include "parser.hpp"
 
 using namespace botanist;
@@ -25,7 +26,7 @@ int main(int argc, char const* argv[]) {
     }
 
     // 評価
-    FPEvaluator evaluator;
+    DoubleEvaluator evaluator;
     double result = evaluator.evaluate(serializedNode);
     std::cout << formula << " = " << result << std::endl;
     return 0;
