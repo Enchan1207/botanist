@@ -47,7 +47,7 @@ jobs:
           mkdir build
           cd build
           cmake .. \
-            -DCMAKE_TOOLCHAIN_FILE=./cmake-avr/cmake/avr_toolchain.cmake
+            -DCMAKE_TOOLCHAIN_FILE=./cmake-avr/cmake/avr_toolchain.cmake \
             -DFORMULA_PARSER_BUILD_TESTS=ON \
             -DFORMULA_PARSER_HEADLESS=ON \
             -DAVR_MCU=${{matrix.mcu}}
