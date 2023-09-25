@@ -59,4 +59,5 @@ jobs:
 
       - name: test
         working-directory: ${{github.workspace}}/build
+        timeout-minutes: 1
         run: ctest
