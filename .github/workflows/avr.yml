@@ -22,6 +22,13 @@ jobs:
     steps:
       - uses: "actions/checkout@v3"
 
+      - name: checkout AVR toolchain for CMake
+        uses: "actions/checkout@v3"
+        with:
+          repository: Enchan1207/cmake-avr
+          ref: v0.2.1
+          path: cmake-avr
+
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
@@ -39,7 +46,11 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DFORMULA_PARSER_BUILD_TESTS=ON -DFORMULA_PARSER_HEADLESS=ON -DAVR_MCU=${{matrix.mcu}}
+          cmake .. \
+            -DCMAKE_TOOLCHAIN_FILE=./cmake-avr/cmake/avr_toolchain.cmake
+            -DFORMULA_PARSER_BUILD_TESTS=ON \
+            -DFORMULA_PARSER_HEADLESS=ON \
+            -DAVR_MCU=${{matrix.mcu}}
 
       - name: build
         working-directory: ${{github.workspace}}/build
