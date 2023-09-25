@@ -1,0 +1,62 @@
+#
+# test using QEMU
+#
+name: unittest on AVR (emulated by QEMU)
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mcu:
+          - "atmega168p"
+          - "atmega328p"
+          - "atmega2560"
+
+    steps:
+      - uses: "actions/checkout@v3"
+
+      - name: checkout AVR toolchain for CMake
+        uses: "actions/checkout@v3"
+        with:
+          repository: Enchan1207/cmake-avr
+          ref: v0.2.1
+          path: cmake-avr
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: setup arduino-cli
+        run: |
+          mkdir -p ~/arduino-cli
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=~/arduino-cli sh
+          ~/arduino-cli/arduino-cli core install arduino:avr
+
+      - name: setup QEMU
+        run: sudo apt-get -y install qemu-system
+
+      - name: configure for ${{matrix.mcu}}
+        run: |
+          mkdir build
+          cd build
+          cmake .. \
+            -DCMAKE_TOOLCHAIN_FILE=./cmake-avr/cmake/avr_toolchain.cmake \
+            -DFORMULA_PARSER_BUILD_TESTS=ON \
+            -DFORMULA_PARSER_HEADLESS=ON \
+            -DAVR_MCU=${{matrix.mcu}}
+
+      - name: build
+        working-directory: ${{github.workspace}}/build
+        run: cmake --build .
+
+      - name: test
+        working-directory: ${{github.workspace}}/build
+        run: ctest

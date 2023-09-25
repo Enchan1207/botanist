@@ -6,7 +6,7 @@
 
 namespace botanist {
 
-collection2::list_size_t Tokenizer::tokenize(char const* formula) {
+size_t Tokenizer::tokenize(char const* formula) {
     initializeTokenList();
 
     auto formulaPtr = formula;
@@ -22,14 +22,14 @@ collection2::list_size_t Tokenizer::tokenize(char const* formula) {
         size_t expectedLength = 0;
         if (!tryParse(formulaPtr, expectedKind, expectedLength)) {
             isLastTokenizationSucceeded = false;
-            return static_cast<collection2::list_size_t>(formulaPtr - formula + 1);
+            return static_cast<size_t>(formulaPtr - formula + 1);
         }
 
         // トークンリストに追加
         auto result = tokenList.append(Token(expectedKind, formulaPtr, expectedLength));
         if (result != collection2::OperationResult::Success) {
             isLastTokenizationSucceeded = false;
-            return static_cast<collection2::list_size_t>(formulaPtr - formula + 1);
+            return static_cast<size_t>(formulaPtr - formula + 1);
         }
         formulaPtr += expectedLength;
     }

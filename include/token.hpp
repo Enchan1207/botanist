@@ -5,8 +5,8 @@
 #ifndef BOTANIST_TOKEN_H
 #define BOTANIST_TOKEN_H
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 namespace botanist {
 
