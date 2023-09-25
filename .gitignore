@@ -3,6 +3,7 @@
 #
 
 build/
+build_*/
 .DS_Store
 
 # Created by https://www.toptal.com/developers/gitignore/api/cmake,c,c++

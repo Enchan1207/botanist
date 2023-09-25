@@ -1,11 +1,11 @@
 #
 # botanist
 #
+cmake_minimum_required(VERSION 3.10)
 
 #
 # project configuration
 #
-cmake_minimum_required(VERSION 3.10)
 project(botanist
     VERSION 0.1.0
     DESCRIPTION "parse and evaluate formula"
@@ -22,16 +22,25 @@ include(FetchContent)
 FetchContent_Declare(
     collection2
     GIT_REPOSITORY https://github.com/Enchan1207/collection2
-    GIT_TAG v0.3.0
+    GIT_TAG v0.4.0
 )
 FetchContent_MakeAvailable(collection2)
+
+#
+# build option
+#
+option(FORMULA_PARSER_HEADLESS "Headless build (avoid stdio operation)" OFF)
+if(FORMULA_PARSER_HEADLESS)
+    message(NOTICE "Headless build enabled")
+endif()
 
 #
 # subdirectories
 #
 add_subdirectory(src)
-add_subdirectory(cli)
-
+if(!FORMULA_PARSER_HEADLESS)
+    add_subdirectory(cli)
+endif()
 
 #
 # unit testing configuration
@@ -42,5 +51,11 @@ if(FORMULA_PARSER_BUILD_TESTS)
     enable_testing()
     message(NOTICE "botanist: unit testing is enabled")
     
-    add_subdirectory(tests)
+    # If you use botanist on AVR microcontroller
+    # using Enchan1207/cmake-avr, tests_avr will be added instead of tests.
+    if(DEFINED BUILD_FOR_AVR AND BUILD_FOR_AVR)
+        add_subdirectory(tests_avr)
+    else()
+        add_subdirectory(tests)
+    endif()
 endif()

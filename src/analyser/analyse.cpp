@@ -2,15 +2,13 @@
 /// @brief 構文木構成
 ///
 
-#include <iostream>
-
 #include "analyser.hpp"
 
 namespace botanist {
 
 using SyntaxNodeKind = SyntaxNode::Kind;
 
-collection2::list_size_t Analyser::analyse(collection2::Node<Token>* token) {
+size_t Analyser::analyse(collection2::Node<Token>* token) {
     // 状態をリセット
     tokenIndex = 0;
     initializeNodePool();
