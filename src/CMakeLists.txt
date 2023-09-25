@@ -15,7 +15,7 @@ target_sources(botanist PRIVATE
     analyser/dump.cpp
     serializer/serialize.cpp
     serializer/dump.cpp
-    evaluator/operate.cpp
+    evaluator/double.cpp
 )
 target_include_directories(botanist PUBLIC
     ${PROJECT_SOURCE_DIR}/include

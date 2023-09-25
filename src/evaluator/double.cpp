@@ -1,12 +1,12 @@
 /// @file
-/// @brief 演算処理
+/// @brief 評価器 (倍精度浮動小数点数)
 ///
 
-#include "evaluator.hpp"
+#include "evaluator/double.hpp"
 
 namespace botanist {
 
-bool FPEvaluator::getValueFromNode(const SyntaxNode* node, double& value) const {
+bool DoubleEvaluator::getValueFromNode(const SyntaxNode* node, double& value) const {
     // 数値ノードを期待する
     if (node == nullptr || node->kind != SyntaxNode::Kind::Number) {
         return false;
@@ -28,7 +28,7 @@ bool FPEvaluator::getValueFromNode(const SyntaxNode* node, double& value) const 
     return true;
 }
 
-double FPEvaluator::evaluate(collection2::Node<SyntaxNode*>* node) {
+double DoubleEvaluator::evaluate(collection2::Node<SyntaxNode*>* node) {
     auto* currentNode = node;
     while (currentNode != nullptr) {
         const auto* syntaxNode = currentNode->element;

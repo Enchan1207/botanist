@@ -8,7 +8,6 @@
 #include <collection2/list.hpp>
 
 #include "analyser.hpp"
-#include "evaluator.hpp"
 #include "serializer.hpp"
 #include "tokenizer.hpp"
 

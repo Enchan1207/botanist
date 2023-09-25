@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include "evaluator/double.hpp"
 #include "parser.hpp"
 
 using namespace collection2;
@@ -51,7 +52,7 @@ int main(int argc, char const* argv[]) {
 
     // 評価器に渡す
     std::cout << "Evaluate..." << std::endl;
-    botanist::FPEvaluator evaluator;
+    botanist::DoubleEvaluator evaluator;
     double calculationResult = evaluator.evaluate(serializedNode);
     std::cout << "ans = " << calculationResult << std::endl;
 
