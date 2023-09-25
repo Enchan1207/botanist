@@ -2,8 +2,6 @@
 /// @brief 構文木構成
 ///
 
-#include <iostream>
-
 #include "analyser.hpp"
 
 namespace botanist {
