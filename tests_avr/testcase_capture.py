@@ -35,14 +35,16 @@ def main() -> int:
         client_socket, _ = server_socket.accept()
 
         # タイムアウトするまで拾い続ける
-        response: bytes = b''
+        proc_output: bytes = b''
         timed_out = False
         while not timed_out:
             rl, _, _ = select.select([client_socket], [], [], 2)
             if len(rl) == 0:
                 timed_out = True
                 break
-            response += client_socket.recv(64)
+            response = client_socket.recv(64)
+            print(response.decode(), end="", flush=True)
+            proc_output += response
 
         # レスポンスが途切れたらクライアントソケットを閉じる
         client_socket.close()
@@ -55,7 +57,7 @@ def main() -> int:
         return 1
 
     # 得られたレスポンスをデコードし、最終行を取得
-    lastresponseline = response.decode().split("\r\n")[-2]
+    lastresponseline = proc_output.decode().split("\r\n")[-2]
     if lastresponseline != "All testcases passed.":
         return 1
 
