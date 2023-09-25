@@ -27,13 +27,18 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(collection2)
 
 #
+# build option
+#
+option(FORMULA_PARSER_HEADLESS "Headless build (avoid stdio operation)" OFF)
+if(FORMULA_PARSER_HEADLESS)
+    message(NOTICE "Headless build enabled")
+endif()
+
+#
 # subdirectories
 #
 add_subdirectory(src)
-
-option(FORMULA_PARSER_BUILD_CLI "Enable testing of botanist" OFF)
-if(FORMULA_PARSER_BUILD_CLI)
-    message(NOTICE "CLI application source included")
+if(!FORMULA_PARSER_HEADLESS)
     add_subdirectory(cli)
 endif()
 

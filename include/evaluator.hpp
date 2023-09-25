@@ -5,10 +5,11 @@
 #ifndef BOTANIST_EVALUATOR_H
 #define BOTANIST_EVALUATOR_H
 
+#include <stdlib.h>
+#include <string.h>
+
 #include <collection2/list.hpp>
 #include <collection2/stack.hpp>
-#include <cstdlib>
-#include <cstring>
 
 #include "syntaxtree.hpp"
 

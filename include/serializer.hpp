@@ -38,10 +38,21 @@ class Serializer {
      */
     collection2::Node<SyntaxNode*>* serializeTree(SyntaxNode* rootNode);
 
+#ifndef HEADLESS
+
     /**
      * @brief 直列化されたノードリストをダンプ
      */
     void dumpSeralizedNodeList() const;
+
+#else
+
+    /**
+     * @brief 直列化されたノードリストをダンプ
+     */
+    void dumpSeralizedNodeList() = delete;
+
+#endif
 };
 
 }  // namespace botanist

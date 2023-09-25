@@ -5,11 +5,12 @@
 #ifndef BOTANIST_TOKENIZER_H
 #define BOTANIST_TOKENIZER_H
 
-#include <cctype>
+#include <ctype.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
+
 #include <collection2/list.hpp>
-#include <cstddef>
-#include <cstdint>
-#include <cstring>
 
 #include "token.hpp"
 
@@ -83,10 +84,10 @@ class Tokenizer final {
      * @brief 与えられた数式を、数値や演算子、括弧等のトークンに分割する
      * @param formula 数式
      *
-     * @return collection2::list_size_t 正常にパースできなかった式の位置
+     * @return size_t 正常にパースできなかった式の位置
      * @note トークナイズに成功した場合は0が返ります。
      */
-    collection2::list_size_t tokenize(char const* formula);
+    size_t tokenize(char const* formula);
 
     /**
      * @brief トークンのリストを取得

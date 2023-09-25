@@ -25,7 +25,7 @@ class Analyser final {
     SyntaxNode syntaxNodePool[64];
 
     /// @brief トークンリストがどこまで進んだか
-    collection2::list_size_t tokenIndex = 0;
+    size_t tokenIndex = 0;
 
     /// @brief 構文解析結果のルートノード
     SyntaxNode* root = nullptr;
@@ -131,10 +131,10 @@ class Analyser final {
      * @brief トークナイズされた数式から構文木を生成
      *
      * @param token トークンリストの先頭
-     * @return collection2::list_size_t 正常にパースできなかったトークンの位置
+     * @return size_t 正常にパースできなかったトークンの位置
      * @note 生成に成功した場合は0が返ります。
      */
-    collection2::list_size_t analyse(collection2::Node<Token>* token);
+    size_t analyse(collection2::Node<Token>* token);
 
     /**
      * @brief 構文木のルートノードを取得
