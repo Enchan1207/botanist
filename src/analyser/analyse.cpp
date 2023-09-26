@@ -8,12 +8,11 @@ namespace botanist {
 
 using SyntaxNodeKind = SyntaxNode::Kind;
 
-size_t Analyser::analyse(collection2::Node<Token>* token) {
+size_t Analyser::analyse() {
     // 状態をリセット
     tokenIndex = 0;
     initializeNodePool();
-    firstToken = token;
-    currentTokenNode = token;
+    currentTokenNode = tokenList.head();
 
     // 構文木生成
     root = expression();

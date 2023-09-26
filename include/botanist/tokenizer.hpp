@@ -16,13 +16,11 @@
 
 namespace botanist {
 
-using TokenList = collection2::List<Token>;
-
 /// @brief 数式を項や演算子、括弧など意味のある単位に分割する
 class Tokenizer final {
    private:
     /// @brief 数式から構成されたトークンのリスト
-    TokenList& tokenList;
+    collection2::List<Token>& tokenList;
 
     /// @brief 最後に行ったトークナイズ処理の結果
     bool isLastTokenizationSucceeded = false;
@@ -78,7 +76,7 @@ class Tokenizer final {
     size_t tryParseAsBracket(char const* str) const;
 
    public:
-    explicit Tokenizer(TokenList& tokenList) : tokenList(tokenList){};
+    explicit Tokenizer(collection2::List<Token>& tokenList) : tokenList(tokenList){};
 
     /**
      * @brief 与えられた数式を、数値や演算子、括弧等のトークンに分割する
@@ -87,17 +85,7 @@ class Tokenizer final {
      * @return size_t 正常にパースできなかった式の位置
      * @note トークナイズに成功した場合は0が返ります。
      */
-    size_t tokenize(char const* formula);
-
-    /**
-     * @brief トークンのリストを取得
-     *
-     * @return collection2::Node<Token>* 最初のトークンへのポインタ
-     * @note 直近で行われたトークナイズに失敗した場合はnullptrが返ります。
-     */
-    collection2::Node<Token>* tokens() const {
-        return isLastTokenizationSucceeded ? tokenList.head() : nullptr;
-    }
+    size_t tokenize(const char* formula);
 
 #ifndef HEADLESS
 
