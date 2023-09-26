@@ -6,7 +6,7 @@
 
 namespace botanist {
 
-void Tokenizer::initializeTokenList() {
+void Tokenizer::initialize() {
     auto result = collection2::OperationResult::Success;
     while (result == collection2::OperationResult::Success) {
         result = tokenList.pop(nullptr);

@@ -7,7 +7,7 @@
 namespace botanist {
 
 size_t Tokenizer::tokenize(char const* formula) {
-    initializeTokenList();
+    initialize();
 
     auto formulaPtr = formula;
     while (*formulaPtr) {

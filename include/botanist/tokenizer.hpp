@@ -29,8 +29,10 @@ class Tokenizer final {
 
     /**
      * @brief トークンリストを初期化する
+     * @note トークンリストはクリアされます。
+     *       以降、トークナイザは新しい式をトークナイズできるようになります。
      */
-    void initializeTokenList();
+    void initialize();
 
     /**
      * @brief 与えられた文字列がトークンとして成立するかを調べ、成立する場合は種類と長さを返す
