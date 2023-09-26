@@ -2,7 +2,7 @@
 /// @brief 構文木構成
 ///
 
-#include "analyser.hpp"
+#include "botanist/analyser.hpp"
 
 namespace botanist {
 

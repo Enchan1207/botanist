@@ -4,11 +4,11 @@
 
 #include <string.h>
 
-#include "analyser.hpp"
-#include "evaluator/double.hpp"
-#include "serializer.hpp"
+#include "botanist/analyser.hpp"
+#include "botanist/evaluator/double.hpp"
+#include "botanist/serializer.hpp"
+#include "botanist/tokenizer.hpp"
 #include "testcase.hpp"
-#include "tokenizer.hpp"
 
 using namespace botanist;
 

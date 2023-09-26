@@ -6,9 +6,9 @@
 
 #include <collection2/list.hpp>
 
-#include "analyser.hpp"
+#include "botanist/analyser.hpp"
+#include "botanist/tokenizer.hpp"
 #include "testcase.hpp"
-#include "tokenizer.hpp"
 
 using namespace botanist;
 

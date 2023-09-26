@@ -4,8 +4,8 @@
 
 #include <iostream>
 
-#include "evaluator/double.hpp"
-#include "parser.hpp"
+#include "botanist/evaluator/double.hpp"
+#include "botanist/parser.hpp"
 
 using namespace collection2;
 using TokenKind = botanist::Token::Kind;

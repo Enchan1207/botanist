@@ -7,8 +7,8 @@
 #include <collection2/list.hpp>
 #include <cstring>
 
-#include "analyser.hpp"
-#include "tokenizer.hpp"
+#include "botanist/analyser.hpp"
+#include "botanist/tokenizer.hpp"
 
 using namespace botanist;
 
