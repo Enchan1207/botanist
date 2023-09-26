@@ -36,11 +36,11 @@ struct Token {
     /// @brief このトークンの種類
     Kind kind = Kind::Empty;
 
+    /// @brief contentの長さ
+    uint8_t length = 0;
+
     /// @brief トークンが持つ内容
     const char* content = nullptr;
-
-    /// @brief contentの長さ
-    size_t length = 0;
 
     Token() = default;
 
@@ -51,8 +51,8 @@ struct Token {
      * @param content トークンが持つ内容
      * @param length contentの長さ
      */
-    Token(Kind kind, const char* content, size_t length)
-        : kind(kind), content(content), length(length){};
+    Token(Kind kind, const char* content, uint8_t length)
+        : kind(kind), length(length), content(content){};
 };
 
 }  // namespace botanist
