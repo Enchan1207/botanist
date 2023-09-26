@@ -16,14 +16,13 @@
 
 namespace botanist {
 
+using TokenList = collection2::List<Token>;
+
 /// @brief 数式を項や演算子、括弧など意味のある単位に分割する
 class Tokenizer final {
    private:
-    /// @brief トークンリストのノードを管理する配列
-    collection2::Node<Token> internalTokensData[64];
-
     /// @brief 数式から構成されたトークンのリスト
-    collection2::List<Token> tokenList;
+    TokenList& tokenList;
 
     /// @brief 最後に行ったトークナイズ処理の結果
     bool isLastTokenizationSucceeded = false;
@@ -77,8 +76,7 @@ class Tokenizer final {
     size_t tryParseAsBracket(char const* str) const;
 
    public:
-    explicit Tokenizer()
-        : tokenList(internalTokensData, sizeof(internalTokensData) / sizeof(internalTokensData[0])){};
+    explicit Tokenizer(TokenList& tokenList) : tokenList(tokenList){};
 
     /**
      * @brief 与えられた数式を、数値や演算子、括弧等のトークンに分割する
@@ -99,12 +97,18 @@ class Tokenizer final {
         return isLastTokenizationSucceeded ? tokenList.head() : nullptr;
     }
 
+#ifndef HEADLESS
+
     /**
      * @brief トークンリストのダンプ
      *
      * @param colorlized 出力にANSIエスケープシーケンスによる色付けを行うか
      */
     void dumpTokenList(bool colorlized = true) const;
+
+#else
+    void dumpTokenList(bool colorlized = true) const = delete;
+#endif
 };
 
 }  // namespace botanist

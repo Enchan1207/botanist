@@ -15,7 +15,9 @@ using namespace botanist;
 
 /// @brief 倍精度浮動小数評価器による演算
 TEST(EvaluateTest, testAnalyseIntFormula) {
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[32];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     EXPECT_EQ(tokenizer.tokenize("(((12+34) - 56*78)-78)/44+100"), 0);
     Analyser analyser;
     EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);

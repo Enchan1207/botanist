@@ -46,12 +46,7 @@ class Serializer {
     void dumpSeralizedNodeList() const;
 
 #else
-
-    /**
-     * @brief 直列化されたノードリストをダンプ
-     */
     void dumpSeralizedNodeList() = delete;
-
 #endif
 };
 

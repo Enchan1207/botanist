@@ -146,6 +146,8 @@ class Analyser final {
         return root;
     }
 
+#ifndef HEADLESS
+
     /**
      * @brief 構文木をダンプ
      *
@@ -159,6 +161,11 @@ class Analyser final {
      * @param node 対象のノード
      */
     void dumpSyntaxNode(SyntaxNode* node) const;
+
+#else
+    void dumpSyntaxTree(SyntaxNode* node) const = delete;
+    void dumpSyntaxNode(SyntaxNode* node) const = delete;
+#endif
 };
 
 }  // namespace botanist

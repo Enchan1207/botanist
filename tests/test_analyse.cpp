@@ -15,7 +15,9 @@ using namespace botanist;
 /// @brief 正当な単項式
 TEST(AnalyseTest, testAnalyseValidFormula) {
     // 先にトークナイザ側でトークン列を生成しておく必要がある
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     EXPECT_EQ(tokenizer.tokenize("1.23-45.6"), 0);
 
     Analyser analyser;
@@ -37,7 +39,9 @@ TEST(AnalyseTest, testAnalyseValidFormula) {
 
 /// @brief 不正な単項式
 TEST(AnalyseTest, testAnalyseInvalidUnary) {
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     EXPECT_EQ(tokenizer.tokenize("12*"), 0);
 
     Analyser analyser;
@@ -47,7 +51,9 @@ TEST(AnalyseTest, testAnalyseInvalidUnary) {
 
 /// @brief 不正な数式
 TEST(AnalyseTest, testAnalyseInvalidFormula) {
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     EXPECT_EQ(tokenizer.tokenize("1++1"), 0);
 
     Analyser analyser;
@@ -57,7 +63,9 @@ TEST(AnalyseTest, testAnalyseInvalidFormula) {
 
 /// @brief 無を解析
 TEST(AnalyseTest, testAnalyseEmptyTokens) {
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     EXPECT_EQ(tokenizer.tokenize(""), 0);
 
     Analyser analyser;
@@ -68,8 +76,10 @@ TEST(AnalyseTest, testAnalyseEmptyTokens) {
 
 /// @brief さまざまな長さの数式を連続で構文木に変換する
 TEST(AnalyseTest, testContinuousAnalysis) {
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
     Analyser analyser;
-    Tokenizer tokenizer;
+    Tokenizer tokenizer(tokenList);
 
     EXPECT_EQ(tokenizer.tokenize("1.23"), 0);
     EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
