@@ -7,7 +7,7 @@
 
 #include <collection2/list.hpp>
 
-#include "syntaxtree.hpp"
+#include "syntaxnode.hpp"
 
 namespace botanist {
 

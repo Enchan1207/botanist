@@ -4,8 +4,10 @@
 
 #include <iostream>
 
+#include "botanist/analyser.hpp"
 #include "botanist/evaluator/double.hpp"
-#include "botanist/parser.hpp"
+#include "botanist/serializer.hpp"
+#include "botanist/tokenizer.hpp"
 
 using namespace collection2;
 using TokenKind = botanist::Token::Kind;
@@ -21,7 +23,9 @@ int main(int argc, char const* argv[]) {
 
     // トークナイザに渡す
     std::cout << "Tokenize..." << std::endl;
-    botanist::Tokenizer tokenizer;
+    collection2::Node<botanist::Token> tokenPool[64];
+    collection2::List<botanist::Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    botanist::Tokenizer tokenizer(tokenList);
     auto tokenizationResult = tokenizer.tokenize(formula);
     if (tokenizationResult != 0) {
         for (size_t i = 0; i < tokenizationResult - 1; i++) {
@@ -35,8 +39,8 @@ int main(int argc, char const* argv[]) {
 
     // トークンリストを構文木に変換
     std::cout << "Analyse..." << std::endl;
-    botanist::Analyser analyser;
-    auto analysisResult = analyser.analyse(tokenizer.tokens());
+    botanist::Analyser analyser(tokenList);
+    auto analysisResult = analyser.analyse();
     if (analysisResult != 0) {
         std::cerr << "Analyse failed: " << analysisResult << std::endl;
         return 1;

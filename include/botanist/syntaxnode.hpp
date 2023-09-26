@@ -2,8 +2,8 @@
 /// @brief 構文木
 ///
 
-#ifndef BOTANIST_SYNTAX_TREE_H
-#define BOTANIST_SYNTAX_TREE_H
+#ifndef BOTANIST_SYNTAX_NODE_H
+#define BOTANIST_SYNTAX_NODE_H
 
 #include <stdint.h>
 
@@ -77,4 +77,4 @@ struct SyntaxNode {
 
 }  // namespace botanist
 
-#endif /* BOTANIST_SYNTAX_TREE_H */
+#endif /* BOTANIST_SYNTAX_NODE_H */

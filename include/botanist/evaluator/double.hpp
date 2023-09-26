@@ -11,7 +11,7 @@
 #include <collection2/list.hpp>
 #include <collection2/stack.hpp>
 
-#include "botanist/syntaxtree.hpp"
+#include "botanist/syntaxnode.hpp"
 
 namespace botanist {
 

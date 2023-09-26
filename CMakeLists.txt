@@ -38,7 +38,7 @@ endif()
 # subdirectories
 #
 add_subdirectory(src)
-if(!FORMULA_PARSER_HEADLESS)
+if(NOT FORMULA_PARSER_HEADLESS)
     add_subdirectory(cli)
 endif()
 
