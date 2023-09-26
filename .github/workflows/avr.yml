@@ -16,7 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         mcu:
-          - "atmega168p"
           - "atmega328p"
           - "atmega2560"
 
