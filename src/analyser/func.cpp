@@ -6,13 +6,13 @@
 
 namespace botanist {
 
-SyntaxNode* Analyser::createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs, SyntaxNode* rhs) {
+SyntaxNodeOld* Analyser::createNewNode(const SyntaxNodeOld::Kind kind, SyntaxNodeOld* lhs, SyntaxNodeOld* rhs) {
     // フリーなノードを探す
-    SyntaxNode* freeNode = nullptr;
+    SyntaxNodeOld* freeNode = nullptr;
     // TODO: 要素数ハードコードの削除
     for (size_t i = 0; i < 64; i++) {
         auto* node = &(syntaxNodePool[i]);
-        if (node->kind != SyntaxNode::Kind::Empty) {
+        if (node->kind != SyntaxNodeOld::Kind::Empty) {
             continue;
         }
         freeNode = node;

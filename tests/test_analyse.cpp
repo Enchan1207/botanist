@@ -27,9 +27,9 @@ TEST(AnalyseTest, testAnalyseValidFormula) {
     const auto* rootNode = analyser.rootNode();
 
     // 各ノードが想定通りの構造になっているか
-    EXPECT_EQ(rootNode->kind, SyntaxNode::Kind::Subtract);
-    EXPECT_EQ(rootNode->lhs->kind, SyntaxNode::Kind::Number);
-    EXPECT_EQ(rootNode->rhs->kind, SyntaxNode::Kind::Number);
+    EXPECT_EQ(rootNode->kind, SyntaxNodeOld::Kind::Subtract);
+    EXPECT_EQ(rootNode->lhs->kind, SyntaxNodeOld::Kind::Number);
+    EXPECT_EQ(rootNode->rhs->kind, SyntaxNodeOld::Kind::Number);
 
     // 内容は正当か
     char buf[5] = {0};

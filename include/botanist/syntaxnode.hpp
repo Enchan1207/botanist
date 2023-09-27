@@ -12,7 +12,7 @@
 namespace botanist {
 
 /// @brief 構文木のノード
-struct SyntaxNode {
+struct SyntaxNodeOld {
     /// @brief ノードの種類
     enum class Kind : uint8_t {
         /// @brief ツリー中に存在しないノード
@@ -41,10 +41,10 @@ struct SyntaxNode {
     Kind kind = Kind::Empty;
 
     /// @brief 左辺
-    SyntaxNode* lhs = nullptr;
+    SyntaxNodeOld* lhs = nullptr;
 
     /// @brief 右辺
-    SyntaxNode* rhs = nullptr;
+    SyntaxNodeOld* rhs = nullptr;
 
     /// @brief ノードが持つ内容
     const char* content = nullptr;
@@ -52,7 +52,7 @@ struct SyntaxNode {
     /// @brief contentの長さ
     size_t length = 0;
 
-    SyntaxNode() = default;
+    SyntaxNodeOld() = default;
 
     /**
      * @brief 値を渡してノードオブジェクトを初期化
@@ -63,11 +63,11 @@ struct SyntaxNode {
      * @param content ノードが持つ内容
      * @param length contentの長さ
      */
-    SyntaxNode(const SyntaxNode::Kind kind,
-               SyntaxNode* lhs,
-               SyntaxNode* rhs,
-               const char* content,
-               size_t length)
+    SyntaxNodeOld(const SyntaxNodeOld::Kind kind,
+                  SyntaxNodeOld* lhs,
+                  SyntaxNodeOld* rhs,
+                  const char* content,
+                  size_t length)
         : kind(kind),
           lhs(lhs),
           rhs(rhs),

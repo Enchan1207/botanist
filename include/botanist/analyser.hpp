@@ -22,13 +22,13 @@ class Analyser final {
     collection2::Node<Token>* currentTokenNode = nullptr;
 
     /// @brief 構文木を構成するノードのプール
-    SyntaxNode syntaxNodePool[64];
+    SyntaxNodeOld syntaxNodePool[64];
 
     /// @brief トークンリストがどこまで進んだか
     size_t tokenIndex = 0;
 
     /// @brief 構文解析結果のルートノード
-    SyntaxNode* root = nullptr;
+    SyntaxNodeOld* root = nullptr;
 
     /**
      * @brief ノードプールから未割り当てのノードを探し、発見できた場合は引数の内容を設定する
@@ -36,11 +36,11 @@ class Analyser final {
      * @param kind 設定するノード種別
      * @param lhs 左辺値
      * @param rhs 右辺値
-     * @return SyntaxNode* 構成されたノードへのポインタ
+     * @return SyntaxNodeOld* 構成されたノードへのポインタ
      * @note ノードプールがいっぱいになっている場合はnullptrが返ります。
      * @note ノードの内容はメンバ `currentTokenNode` より取得されます。
      */
-    SyntaxNode* createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs = nullptr, SyntaxNode* rhs = nullptr);
+    SyntaxNodeOld* createNewNode(const SyntaxNodeOld::Kind kind, SyntaxNodeOld* lhs = nullptr, SyntaxNodeOld* rhs = nullptr);
 
     /**
      * @brief 今見ているトークンの種類と引数が一致するか調べる
@@ -99,30 +99,30 @@ class Analyser final {
     void initializeNodePool() {
         for (size_t i = 0; i < 64; i++) {
             auto* node = &(syntaxNodePool[i]);
-            node->kind = SyntaxNode::Kind::Empty;
+            node->kind = SyntaxNodeOld::Kind::Empty;
         }
     }
 
     /**
      * @brief アナライザが見ているトークンを式の開始とみなしてパースを試みる
      *
-     * @return SyntaxNode* パース結果
+     * @return SyntaxNodeOld* パース結果
      */
-    SyntaxNode* expression();
+    SyntaxNodeOld* expression();
 
     /**
      * @brief アナライザが見ているトークンを単一の項とみなしてパースを試みる
      *
-     * @return SyntaxNode* パース結果
+     * @return SyntaxNodeOld* パース結果
      */
-    SyntaxNode* unary();
+    SyntaxNodeOld* unary();
 
     /**
      * @brief アナライザが見ているトークンを単一の因子とみなしてパースを試みる
      *
-     * @return SyntaxNode* パース結果
+     * @return SyntaxNodeOld* パース結果
      */
-    SyntaxNode* factor();
+    SyntaxNodeOld* factor();
 
    public:
     explicit Analyser(const collection2::List<Token>& tokenList) : tokenList(tokenList){};
@@ -138,10 +138,10 @@ class Analyser final {
     /**
      * @brief 構文木のルートノードを取得
      *
-     * @return SyntaxNode* 構文木のルートノード
+     * @return SyntaxNodeOld* 構文木のルートノード
      * @note 直近で行われた構文木の生成に失敗した場合はnullptrが返ります。
      */
-    SyntaxNode* rootNode() {
+    SyntaxNodeOld* rootNode() {
         return root;
     }
 
@@ -152,18 +152,18 @@ class Analyser final {
      *
      * @param node 対象のノード
      */
-    void dumpSyntaxTree(SyntaxNode* node) const;
+    void dumpSyntaxTree(SyntaxNodeOld* node) const;
 
     /**
      * @brief 構文ノードをダンプ
      *
      * @param node 対象のノード
      */
-    void dumpSyntaxNode(SyntaxNode* node) const;
+    void dumpSyntaxNode(SyntaxNodeOld* node) const;
 
 #else
-    void dumpSyntaxTree(SyntaxNode* node) const = delete;
-    void dumpSyntaxNode(SyntaxNode* node) const = delete;
+    void dumpSyntaxTree(SyntaxNodeOld* node) const = delete;
+    void dumpSyntaxNode(SyntaxNodeOld* node) const = delete;
 #endif
 };
 

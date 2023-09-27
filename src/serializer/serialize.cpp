@@ -6,12 +6,12 @@
 
 namespace botanist {
 
-collection2::Node<SyntaxNode*>* Serializer::serializeTree(SyntaxNode* rootNode) {
+collection2::Node<SyntaxNodeOld*>* Serializer::serializeTree(SyntaxNodeOld* rootNode) {
     serializeNode(rootNode);
     return syntaxNodeList.head();
 }
 
-void Serializer::serializeNode(SyntaxNode* node) {
+void Serializer::serializeNode(SyntaxNodeOld* node) {
     if (node == nullptr) {
         return;
     }

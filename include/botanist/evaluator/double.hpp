@@ -31,7 +31,7 @@ class DoubleEvaluator final {
      * @param value 数値化した値の格納先
      * @return bool 変換に失敗した場合はfalseが返ります。
      */
-    bool getValueFromNode(const SyntaxNode* node, double& value) const;
+    bool getValueFromNode(const SyntaxNodeOld* node, double& value) const;
 
    public:
     DoubleEvaluator() : calcStack(internalTokensData, sizeof(internalTokensData) / sizeof(internalTokensData[0])){};
@@ -43,7 +43,7 @@ class DoubleEvaluator final {
      * @return double 計算結果
      * @note 内部の計算は倍精度浮動小数点(`double`)により行われるため、誤差が発生する場合があります。
      */
-    double evaluate(collection2::Node<SyntaxNode*>* node);
+    double evaluate(collection2::Node<SyntaxNodeOld*>* node);
 };
 
 }  // namespace botanist

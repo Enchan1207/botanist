@@ -12,12 +12,12 @@
 
 namespace botanist {
 
-void Analyser::dumpSyntaxTree(SyntaxNode* node) const {
+void Analyser::dumpSyntaxTree(SyntaxNodeOld* node) const {
     std::cout << "flowchart TD" << std::endl;
     dumpSyntaxNode(node);
 }
 
-void Analyser::dumpSyntaxNode(SyntaxNode* node) const {
+void Analyser::dumpSyntaxNode(SyntaxNodeOld* node) const {
     // アドレスを取得しておく
     auto nodeAddress = static_cast<const void*>(node);
     std::stringstream nodeAddressStream;
@@ -29,24 +29,24 @@ void Analyser::dumpSyntaxNode(SyntaxNode* node) const {
     memset(identifierBuffer, '\0', node->length + 1);
     std::cout << "  " << addressStr << "[";
     switch (node->kind) {
-        case SyntaxNode::Kind::Number:
+        case SyntaxNodeOld::Kind::Number:
             memcpy(identifierBuffer, node->content, node->length);
             std::cout << identifierBuffer;
             break;
 
-        case SyntaxNode::Kind::Add:
+        case SyntaxNodeOld::Kind::Add:
             std::cout << "+";
             break;
 
-        case SyntaxNode::Kind::Subtract:
+        case SyntaxNodeOld::Kind::Subtract:
             std::cout << "-";
             break;
 
-        case SyntaxNode::Kind::Multiply:
+        case SyntaxNodeOld::Kind::Multiply:
             std::cout << "*";
             break;
 
-        case SyntaxNode::Kind::Divide:
+        case SyntaxNodeOld::Kind::Divide:
             std::cout << "\"/\"";
             break;
 

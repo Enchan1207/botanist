@@ -6,9 +6,9 @@
 
 namespace botanist {
 
-bool DoubleEvaluator::getValueFromNode(const SyntaxNode* node, double& value) const {
+bool DoubleEvaluator::getValueFromNode(const SyntaxNodeOld* node, double& value) const {
     // 数値ノードを期待する
-    if (node == nullptr || node->kind != SyntaxNode::Kind::Number) {
+    if (node == nullptr || node->kind != SyntaxNodeOld::Kind::Number) {
         return false;
     }
 
@@ -28,7 +28,7 @@ bool DoubleEvaluator::getValueFromNode(const SyntaxNode* node, double& value) co
     return true;
 }
 
-double DoubleEvaluator::evaluate(collection2::Node<SyntaxNode*>* node) {
+double DoubleEvaluator::evaluate(collection2::Node<SyntaxNodeOld*>* node) {
     auto* currentNode = node;
     while (currentNode != nullptr) {
         const auto* syntaxNode = currentNode->element;
@@ -49,19 +49,19 @@ double DoubleEvaluator::evaluate(collection2::Node<SyntaxNode*>* node) {
 
         // 計算して積む
         switch (syntaxNode->kind) {
-            case SyntaxNode::Kind::Add:
+            case SyntaxNodeOld::Kind::Add:
                 calcStack.push(lhs + rhs);
                 break;
 
-            case SyntaxNode::Kind::Subtract:
+            case SyntaxNodeOld::Kind::Subtract:
                 calcStack.push(lhs - rhs);
                 break;
 
-            case SyntaxNode::Kind::Multiply:
+            case SyntaxNodeOld::Kind::Multiply:
                 calcStack.push(lhs * rhs);
                 break;
 
-            case SyntaxNode::Kind::Divide:
+            case SyntaxNodeOld::Kind::Divide:
                 calcStack.push(lhs / rhs);
                 break;
 

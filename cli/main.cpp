@@ -45,7 +45,7 @@ int main(int argc, char const* argv[]) {
         std::cerr << "Analyse failed: " << analysisResult << std::endl;
         return 1;
     }
-    botanist::SyntaxNode* rootNode = analyser.rootNode();
+    botanist::SyntaxNodeOld* rootNode = analyser.rootNode();
     analyser.dumpSyntaxTree(rootNode);
 
     // 構文木を直列化し、スタックマシンで動かせるレベルまで持っていく

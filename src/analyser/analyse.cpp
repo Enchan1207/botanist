@@ -6,7 +6,7 @@
 
 namespace botanist {
 
-using SyntaxNodeKind = SyntaxNode::Kind;
+using SyntaxNodeKind = SyntaxNodeOld::Kind;
 
 size_t Analyser::analyse() {
     // 状態をリセット
@@ -31,7 +31,7 @@ size_t Analyser::analyse() {
     return 0;
 }
 
-SyntaxNode* Analyser::expression() {
+SyntaxNodeOld* Analyser::expression() {
     auto* node = unary();
 
     bool canLoopContinue = true;
@@ -70,7 +70,7 @@ SyntaxNode* Analyser::expression() {
     return node;
 }
 
-SyntaxNode* Analyser::unary() {
+SyntaxNodeOld* Analyser::unary() {
     auto* node = factor();
 
     bool canLoopContinue = true;
@@ -109,7 +109,7 @@ SyntaxNode* Analyser::unary() {
     return node;
 }
 
-SyntaxNode* Analyser::factor() {
+SyntaxNodeOld* Analyser::factor() {
     if (forward("(", 1)) {
         auto* node = expression();
 

@@ -26,21 +26,21 @@ void Serializer::dumpSeralizedNodeList() const {
         memset(contentStr, '\0', node->length + 1);
 
         switch (node->kind) {
-            case SyntaxNode::Kind::Number:
+            case SyntaxNodeOld::Kind::Number:
                 memcpy(contentStr, node->content, node->length);
                 std::cout << "push " << contentStr << std::endl;
                 break;
 
-            case SyntaxNode::Kind::Add:
+            case SyntaxNodeOld::Kind::Add:
                 std::cout << "add" << contentStr << std::endl;
                 break;
-            case SyntaxNode::Kind::Subtract:
+            case SyntaxNodeOld::Kind::Subtract:
                 std::cout << "sub" << contentStr << std::endl;
                 break;
-            case SyntaxNode::Kind::Multiply:
+            case SyntaxNodeOld::Kind::Multiply:
                 std::cout << "mul" << contentStr << std::endl;
                 break;
-            case SyntaxNode::Kind::Divide:
+            case SyntaxNodeOld::Kind::Divide:
                 std::cout << "div" << contentStr << std::endl;
                 break;
 
