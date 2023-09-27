@@ -40,12 +40,6 @@ struct SyntaxNode {
     /// @brief このノードの種類
     Kind kind = Kind::Empty;
 
-    /// @brief 左辺
-    SyntaxNode* lhs = nullptr;
-
-    /// @brief 右辺
-    SyntaxNode* rhs = nullptr;
-
     /// @brief ノードが持つ内容
     const char* content = nullptr;
 
@@ -58,21 +52,11 @@ struct SyntaxNode {
      * @brief 値を渡してノードオブジェクトを初期化
      *
      * @param kind ノードの種類
-     * @param lhs 左辺
-     * @param rhs 右辺
      * @param content ノードが持つ内容
      * @param length contentの長さ
      */
-    SyntaxNode(const SyntaxNode::Kind kind,
-               SyntaxNode* lhs,
-               SyntaxNode* rhs,
-               const char* content,
-               size_t length)
-        : kind(kind),
-          lhs(lhs),
-          rhs(rhs),
-          content(content),
-          length(length){};
+    SyntaxNode(const SyntaxNode::Kind kind, const char* content, size_t length)
+        : kind(kind), content(content), length(length){};
 };
 
 }  // namespace botanist
