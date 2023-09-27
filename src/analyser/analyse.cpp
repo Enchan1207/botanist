@@ -11,7 +11,7 @@ using SyntaxNodeKind = SyntaxNode::Kind;
 size_t Analyser::analyse() {
     // 状態をリセット
     tokenIndex = 0;
-    initialize();
+    initializeNodePool();
     currentTokenNode = tokenList.head();
 
     // 構文木生成
