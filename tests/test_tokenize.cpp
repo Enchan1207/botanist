@@ -7,64 +7,77 @@
 #include <cstring>
 #include <iostream>
 
-#include "tokenizer.hpp"
+#include "botanist/tokenizer.hpp"
 
 using namespace botanist;
 
+using TokenList = collection2::List<Token>;
+
 /// @brief 正当な単項式
 TEST(TokenizeTest, testTokenizeValidUnary) {
-    EXPECT_EQ(Tokenizer().tokenize(""), 0);
-    EXPECT_EQ(Tokenizer().tokenize("1"), 0);
-    EXPECT_EQ(Tokenizer().tokenize("123"), 0);
-    EXPECT_EQ(Tokenizer().tokenize("1.23"), 0);
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    EXPECT_EQ(Tokenizer(tokenList).tokenize(""), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("123"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1.23"), 0);
 }
 
 /// @brief 不正な単項式
 TEST(TokenizeTest, testTokenizeInvalidUnary) {
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+
     // 変数には対応していない
-    EXPECT_EQ(Tokenizer().tokenize("a"), 1);
-    EXPECT_EQ(Tokenizer().tokenize("bc"), 1);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("a"), 1);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("bc"), 1);
 
     // 関数は使えない
-    EXPECT_EQ(Tokenizer().tokenize("sin(45)"), 1);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("sin(45)"), 1);
 
     // 小数点で始まってはいけない
-    EXPECT_EQ(Tokenizer().tokenize(".1"), 1);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize(".1"), 1);
 
     // "1" までパースし、2文字目の '.' でエラーとなる
-    EXPECT_EQ(Tokenizer().tokenize("1."), 2);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1."), 2);
 
     // "1.2" までパースし、4文字目の '.' でエラーとなる
-    EXPECT_EQ(Tokenizer().tokenize("1.2.3"), 4);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1.2.3"), 4);
 
     // "1.2" までパースし、4文字目の '.' でエラーとなる
-    EXPECT_EQ(Tokenizer().tokenize("1.2.3.4"), 4);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1.2.3.4"), 4);
 }
 
 /// @brief 多項式
 TEST(TokenizeTest, testTokenizePolynomial) {
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+
     // 四則演算
-    EXPECT_EQ(Tokenizer().tokenize("1+1"), 0);
-    EXPECT_EQ(Tokenizer().tokenize("123-456"), 0);
-    EXPECT_EQ(Tokenizer().tokenize("1.23*4.56"), 0);
-    EXPECT_EQ(Tokenizer().tokenize("1.23 / 4.56"), 0);
-    EXPECT_EQ(Tokenizer().tokenize("1.23 - 4.56 + 7.89"), 0);
-    EXPECT_EQ(Tokenizer().tokenize("1.23 + 4.56 - 7.89 * 0.12 / 3.45"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1+1"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("123-456"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1.23*4.56"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1.23 / 4.56"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1.23 - 4.56 + 7.89"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1.23 + 4.56 - 7.89 * 0.12 / 3.45"), 0);
 
     // 数式としては正しくないが、トークナイズには成功する
     // (トークナイザは数式の意味を理解していないため)
-    EXPECT_EQ(Tokenizer().tokenize("1.23+"), 0);
-    EXPECT_EQ(Tokenizer().tokenize("4.56 -"), 0);
-    EXPECT_EQ(Tokenizer().tokenize("7.89 * 0.12 /"), 0);
-    EXPECT_EQ(Tokenizer().tokenize("1/0"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1.23+"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("4.56 -"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("7.89 * 0.12 /"), 0);
+    EXPECT_EQ(Tokenizer(tokenList).tokenize("1/0"), 0);
 }
 
 /// @brief トークン数の確認
 TEST(TokenizeTest, testTokenizeAddSubAndCount) {
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+
     // 整数値のみ
-    Tokenizer intPolynomialTokenizer;
+    Tokenizer intPolynomialTokenizer(tokenList);
     EXPECT_EQ(intPolynomialTokenizer.tokenize("123 + 234-345 * 456/567"), 0);
-    auto* intTokenizedNode = intPolynomialTokenizer.tokens();
+    auto* intTokenizedNode = tokenList.head();
     int intNodeCount = 1;
     while (intTokenizedNode->next != nullptr) {
         intTokenizedNode = intTokenizedNode->next;
@@ -73,9 +86,9 @@ TEST(TokenizeTest, testTokenizeAddSubAndCount) {
     EXPECT_EQ(intNodeCount, 9);
 
     // 混在
-    Tokenizer realPolynomialTokenizer;
+    Tokenizer realPolynomialTokenizer(tokenList);
     EXPECT_EQ(realPolynomialTokenizer.tokenize("12+3.4-56*7.8/90"), 0);
-    auto* realTokenizedNode = realPolynomialTokenizer.tokens();
+    auto* realTokenizedNode = tokenList.head();
     int realNodeCount = 1;
     while (realTokenizedNode->next != nullptr) {
         realTokenizedNode = realTokenizedNode->next;
@@ -86,9 +99,11 @@ TEST(TokenizeTest, testTokenizeAddSubAndCount) {
 
 /// @brief より複雑な多項式
 TEST(TokenizeTest, testTokenizeComplexPolynomial) {
-    Tokenizer complexTokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer complexTokenizer(tokenList);
     EXPECT_EQ(complexTokenizer.tokenize("(12+3.4)-(56*7.8)/90"), 0);
-    auto* tokenizedNode = complexTokenizer.tokens();
+    auto* tokenizedNode = tokenList.head();
     int nodeCount = 1;
     while (tokenizedNode->next != nullptr) {
         tokenizedNode = tokenizedNode->next;
@@ -99,27 +114,16 @@ TEST(TokenizeTest, testTokenizeComplexPolynomial) {
 
 /// @brief さまざまな長さの数式を連続でトークナイズする
 TEST(TokenizeTest, testContinuousTokenization) {
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     EXPECT_EQ(tokenizer.tokenize("1.23"), 0);
-    EXPECT_NE(tokenizer.tokens(), nullptr);
-
     EXPECT_EQ(tokenizer.tokenize("1.2.3.4"), 4);
-    EXPECT_EQ(tokenizer.tokens(), nullptr);
-
     EXPECT_EQ(tokenizer.tokenize("1+1"), 0);
-    EXPECT_NE(tokenizer.tokens(), nullptr);
-
     EXPECT_EQ(tokenizer.tokenize("sin(45)"), 1);
-    EXPECT_EQ(tokenizer.tokens(), nullptr);
-
     EXPECT_EQ(tokenizer.tokenize("1+1*2"), 0);
-    EXPECT_NE(tokenizer.tokens(), nullptr);
-
     EXPECT_EQ(tokenizer.tokenize("( 434*26222)+79999 / 0"), 0);
-    EXPECT_NE(tokenizer.tokens(), nullptr);
-
     EXPECT_EQ(tokenizer.tokenize("1."), 2);
-    EXPECT_EQ(tokenizer.tokens(), nullptr);
 }
 
 /// @brief トークナイザが扱えない長さのトークン
@@ -131,7 +135,9 @@ TEST(TokenizeTest, testTooLongToken) {
         const char* sample = "1+";
         memcpy(tooLongToken + i, sample, 2);
     }
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     auto result = tokenizer.tokenize(tooLongToken);
     EXPECT_NE(result, 0);
 }

@@ -5,6 +5,7 @@
     "sonarlint.pathToCompileCommands": "${workspaceFolder}/.vscode/compile_commands.json",
     "files.associations": {
         "*.cfg": "dotenv",
+        "*.mcmeta": "json",
         "__bit_reference": "cpp",
         "__bits": "cpp",
         "__config": "cpp",
@@ -83,6 +84,9 @@
         "queue": "cpp",
         "stack": "cpp",
         "strstream": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "__verbose_abort": "cpp",
+        "charconv": "cpp",
+        "thread": "cpp"
     }
 }

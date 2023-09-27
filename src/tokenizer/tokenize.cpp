@@ -2,12 +2,12 @@
 /// @brief トークナイズ
 ///
 
-#include "tokenizer.hpp"
+#include "botanist/tokenizer.hpp"
 
 namespace botanist {
 
-size_t Tokenizer::tokenize(char const* formula) {
-    initializeTokenList();
+size_t Tokenizer::tokenize(const char* formula) {
+    initialize();
 
     auto formulaPtr = formula;
     while (*formulaPtr) {

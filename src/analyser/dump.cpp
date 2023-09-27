@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 
-#include "analyser.hpp"
+#include "botanist/analyser.hpp"
 
 namespace botanist {
 

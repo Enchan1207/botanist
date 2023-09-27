@@ -7,19 +7,23 @@
 #include <collection2/list.hpp>
 #include <cstring>
 
-#include "analyser.hpp"
-#include "tokenizer.hpp"
+#include "botanist/analyser.hpp"
+#include "botanist/tokenizer.hpp"
 
 using namespace botanist;
+
+using TokenList = collection2::List<Token>;
 
 /// @brief 正当な単項式
 TEST(AnalyseTest, testAnalyseValidFormula) {
     // 先にトークナイザ側でトークン列を生成しておく必要がある
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     EXPECT_EQ(tokenizer.tokenize("1.23-45.6"), 0);
 
-    Analyser analyser;
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    Analyser analyser(tokenList);
+    EXPECT_EQ(analyser.analyse(), 0);
     const auto* rootNode = analyser.rootNode();
 
     // 各ノードが想定通りの構造になっているか
@@ -37,74 +41,79 @@ TEST(AnalyseTest, testAnalyseValidFormula) {
 
 /// @brief 不正な単項式
 TEST(AnalyseTest, testAnalyseInvalidUnary) {
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
+    Analyser analyser(tokenList);
     EXPECT_EQ(tokenizer.tokenize("12*"), 0);
-
-    Analyser analyser;
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 2);
+    EXPECT_EQ(analyser.analyse(), 2);
     EXPECT_EQ(analyser.rootNode(), nullptr);
 }
 
 /// @brief 不正な数式
 TEST(AnalyseTest, testAnalyseInvalidFormula) {
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
+    Analyser analyser(tokenList);
     EXPECT_EQ(tokenizer.tokenize("1++1"), 0);
-
-    Analyser analyser;
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 2);
+    EXPECT_EQ(analyser.analyse(), 2);
     EXPECT_EQ(analyser.rootNode(), nullptr);
 }
 
 /// @brief 無を解析
 TEST(AnalyseTest, testAnalyseEmptyTokens) {
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
+    Analyser analyser(tokenList);
     EXPECT_EQ(tokenizer.tokenize(""), 0);
-
-    Analyser analyser;
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 1);
+    EXPECT_EQ(analyser.analyse(), 1);
     const auto* rootNode = analyser.rootNode();
     EXPECT_EQ(rootNode, nullptr);
 }
 
 /// @brief さまざまな長さの数式を連続で構文木に変換する
 TEST(AnalyseTest, testContinuousAnalysis) {
-    Analyser analyser;
-    Tokenizer tokenizer;
+    collection2::Node<Token> tokenPool[16];
+    TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Analyser analyser(tokenList);
+    Tokenizer tokenizer(tokenList);
 
     EXPECT_EQ(tokenizer.tokenize("1.23"), 0);
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    EXPECT_EQ(analyser.analyse(), 0);
     EXPECT_NE(analyser.rootNode(), nullptr);
 
     EXPECT_EQ(tokenizer.tokenize("12+"), 0);
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 2);
+    EXPECT_EQ(analyser.analyse(), 2);
     EXPECT_EQ(analyser.rootNode(), nullptr);
 
     EXPECT_EQ(tokenizer.tokenize("1234+5678"), 0);
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    EXPECT_EQ(analyser.analyse(), 0);
     EXPECT_NE(analyser.rootNode(), nullptr);
 
     EXPECT_EQ(tokenizer.tokenize("(12+(34*56)"), 0);
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 8);
+    EXPECT_EQ(analyser.analyse(), 8);
     EXPECT_EQ(analyser.rootNode(), nullptr);
 
     EXPECT_EQ(tokenizer.tokenize("(12+(34/56)+78"), 0);
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 10);
+    EXPECT_EQ(analyser.analyse(), 10);
     EXPECT_EQ(analyser.rootNode(), nullptr);
 
     EXPECT_EQ(tokenizer.tokenize("12)"), 0);
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 1);
+    EXPECT_EQ(analyser.analyse(), 1);
     EXPECT_EQ(analyser.rootNode(), nullptr);
 
     EXPECT_EQ(tokenizer.tokenize("123++456"), 0);
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 2);
+    EXPECT_EQ(analyser.analyse(), 2);
     EXPECT_EQ(analyser.rootNode(), nullptr);
 
     EXPECT_EQ(tokenizer.tokenize("1+1*2-4"), 0);
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    EXPECT_EQ(analyser.analyse(), 0);
     EXPECT_NE(analyser.rootNode(), nullptr);
 
     EXPECT_EQ(tokenizer.tokenize("(812*46999)+17777 / 0"), 0);
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0);
+    EXPECT_EQ(analyser.analyse(), 0);
     EXPECT_NE(analyser.rootNode(), nullptr);
 }
 
@@ -122,8 +131,8 @@ TEST(AnalyseTest, testTooLongFormula) {
         }
     }
 
-    Analyser analyser;
-    auto result = analyser.analyse(tokenList.head());
+    Analyser analyser(tokenList);
+    auto result = analyser.analyse();
     EXPECT_NE(result, 0);
     EXPECT_EQ(analyser.rootNode(), nullptr);
     std::cerr << "analyse failed: at token # " << result << std::endl;

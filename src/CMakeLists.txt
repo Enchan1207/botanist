@@ -15,7 +15,7 @@ target_sources(botanist PRIVATE
     evaluator/double.cpp
 )
 
-if(!FORMULA_PARSER_HEADLESS)
+if(NOT FORMULA_PARSER_HEADLESS)
     target_sources(botanist PRIVATE
         tokenizer/dump.cpp
         serializer/dump.cpp

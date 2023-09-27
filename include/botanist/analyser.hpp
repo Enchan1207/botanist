@@ -7,7 +7,7 @@
 
 #include <collection2/list.hpp>
 
-#include "syntaxtree.hpp"
+#include "syntaxnode.hpp"
 #include "token.hpp"
 
 namespace botanist {
@@ -15,8 +15,8 @@ namespace botanist {
 /// @brief トークナイズされた数式を解析し、構文木を形成する
 class Analyser final {
    private:
-    /// @brief 最初のトークンへのポインタ
-    collection2::Node<Token>* firstToken = nullptr;
+    /// @brief トークンリスト
+    const collection2::List<Token>& tokenList;
 
     /// @brief アナライザが現在見ているトークンリストのノード
     collection2::Node<Token>* currentTokenNode = nullptr;
@@ -125,16 +125,15 @@ class Analyser final {
     SyntaxNode* factor();
 
    public:
-    explicit Analyser() = default;
+    explicit Analyser(const collection2::List<Token>& tokenList) : tokenList(tokenList){};
 
     /**
      * @brief トークナイズされた数式から構文木を生成
      *
-     * @param token トークンリストの先頭
      * @return size_t 正常にパースできなかったトークンの位置
      * @note 生成に成功した場合は0が返ります。
      */
-    size_t analyse(collection2::Node<Token>* token);
+    size_t analyse();
 
     /**
      * @brief 構文木のルートノードを取得
@@ -145,6 +144,8 @@ class Analyser final {
     SyntaxNode* rootNode() {
         return root;
     }
+
+#ifndef HEADLESS
 
     /**
      * @brief 構文木をダンプ
@@ -159,6 +160,11 @@ class Analyser final {
      * @param node 対象のノード
      */
     void dumpSyntaxNode(SyntaxNode* node) const;
+
+#else
+    void dumpSyntaxTree(SyntaxNode* node) const = delete;
+    void dumpSyntaxNode(SyntaxNode* node) const = delete;
+#endif
 };
 
 }  // namespace botanist

@@ -2,7 +2,7 @@
 /// @brief 構文木の直列化
 ///
 
-#include "serializer.hpp"
+#include "botanist/serializer.hpp"
 
 namespace botanist {
 

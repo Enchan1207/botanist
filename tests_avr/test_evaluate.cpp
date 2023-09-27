@@ -4,13 +4,14 @@
 
 #include <string.h>
 
-#include "analyser.hpp"
-#include "evaluator/double.hpp"
-#include "serializer.hpp"
+#include "botanist/analyser.hpp"
+#include "botanist/evaluator/double.hpp"
+#include "botanist/serializer.hpp"
+#include "botanist/tokenizer.hpp"
 #include "testcase.hpp"
-#include "tokenizer.hpp"
 
 using namespace botanist;
+using namespace collection2;
 
 namespace botanisttests {
 
@@ -18,10 +19,12 @@ namespace botanisttests {
 TEST(testAnalyseIntFormula) {
     BeginTestcase(result);
 
-    Tokenizer tokenizer;
+    Node<Token> tokenPool[16];
+    List<Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     EXPECT_EQ(tokenizer.tokenize("(((12+34) - 56*78)-78)/44+100"), 0, result);
-    Analyser analyser;
-    EXPECT_EQ(analyser.analyse(tokenizer.tokens()), 0, result);
+    Analyser analyser(tokenList);
+    EXPECT_EQ(analyser.analyse(), 0, result);
     auto* rootNode = analyser.rootNode();
     EXPECT_NE(rootNode, nullptr, result);
     Serializer serializer;

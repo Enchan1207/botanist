@@ -19,19 +19,18 @@ namespace botanist {
 /// @brief 数式を項や演算子、括弧など意味のある単位に分割する
 class Tokenizer final {
    private:
-    /// @brief トークンリストのノードを管理する配列
-    collection2::Node<Token> internalTokensData[64];
-
     /// @brief 数式から構成されたトークンのリスト
-    collection2::List<Token> tokenList;
+    collection2::List<Token>& tokenList;
 
     /// @brief 最後に行ったトークナイズ処理の結果
     bool isLastTokenizationSucceeded = false;
 
     /**
      * @brief トークンリストを初期化する
+     * @note トークンリストはクリアされます。
+     *       以降、トークナイザは新しい式をトークナイズできるようになります。
      */
-    void initializeTokenList();
+    void initialize();
 
     /**
      * @brief 与えられた文字列がトークンとして成立するかを調べ、成立する場合は種類と長さを返す
@@ -77,8 +76,7 @@ class Tokenizer final {
     size_t tryParseAsBracket(char const* str) const;
 
    public:
-    explicit Tokenizer()
-        : tokenList(internalTokensData, sizeof(internalTokensData) / sizeof(internalTokensData[0])){};
+    explicit Tokenizer(collection2::List<Token>& tokenList) : tokenList(tokenList){};
 
     /**
      * @brief 与えられた数式を、数値や演算子、括弧等のトークンに分割する
@@ -87,17 +85,9 @@ class Tokenizer final {
      * @return size_t 正常にパースできなかった式の位置
      * @note トークナイズに成功した場合は0が返ります。
      */
-    size_t tokenize(char const* formula);
+    size_t tokenize(const char* formula);
 
-    /**
-     * @brief トークンのリストを取得
-     *
-     * @return collection2::Node<Token>* 最初のトークンへのポインタ
-     * @note 直近で行われたトークナイズに失敗した場合はnullptrが返ります。
-     */
-    collection2::Node<Token>* tokens() const {
-        return isLastTokenizationSucceeded ? tokenList.head() : nullptr;
-    }
+#ifndef HEADLESS
 
     /**
      * @brief トークンリストのダンプ
@@ -105,6 +95,10 @@ class Tokenizer final {
      * @param colorlized 出力にANSIエスケープシーケンスによる色付けを行うか
      */
     void dumpTokenList(bool colorlized = true) const;
+
+#else
+    void dumpTokenList(bool colorlized = true) const = delete;
+#endif
 };
 
 }  // namespace botanist

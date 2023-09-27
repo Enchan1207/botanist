@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "tokenizer.hpp"
+#include "botanist/tokenizer.hpp"
 
 namespace botanist {
 
@@ -13,7 +13,7 @@ void Tokenizer::dumpTokenList(bool colorlized) const {
         std::cerr << "The last tokenization was failed. please invoke again after tokenize valid formula." << std::endl;
         return;
     }
-    auto* tokenNode = tokens();
+    auto* tokenNode = tokenList.head();
 
     while (tokenNode != nullptr) {
         const auto token = tokenNode->element;
