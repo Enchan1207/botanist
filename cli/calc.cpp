@@ -2,6 +2,8 @@
 // 単純な計算機
 //
 
+#include <collection2/list.hpp>
+#include <collection2/tree.hpp>
 #include <iostream>
 
 #include "botanist/analyser.hpp"
@@ -10,6 +12,7 @@
 #include "botanist/tokenizer.hpp"
 
 using namespace botanist;
+using namespace collection2;
 
 int main(int argc, char const* argv[]) {
     // 対象の式は実行引数経由で渡されることを想定
@@ -20,11 +23,14 @@ int main(int argc, char const* argv[]) {
     char const* formula = argv[1];
 
     // トークンリストを作成
-    collection2::Node<botanist::Token> tokenPool[64];
-    collection2::List<botanist::Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
-
+    Node<botanist::Token> tokenPool[64];
+    List<botanist::Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
     Tokenizer tokenizer(tokenList);
-    Analyser analyser(tokenList);
+
+    // 構文ツリーを作成
+    TreeNode<SyntaxNode> nodePool[16];
+    Tree<SyntaxNode> syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
     bool isTokenized = tokenizer.tokenize(formula) == 0;
     if (!isTokenized) {
         std::cerr << "failed to tokenize" << std::endl;

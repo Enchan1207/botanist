@@ -2,6 +2,8 @@
 // botanist
 //
 
+#include <collection2/list.hpp>
+#include <collection2/tree.hpp>
 #include <iostream>
 
 #include "botanist/analyser.hpp"
@@ -39,7 +41,9 @@ int main(int argc, char const* argv[]) {
 
     // トークンリストを構文木に変換
     std::cout << "Analyse..." << std::endl;
-    botanist::Analyser analyser(tokenList);
+    collection2::TreeNode<botanist::SyntaxNode> nodePool[16];
+    collection2::Tree<botanist::SyntaxNode> syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    botanist::Analyser analyser(tokenList, syntaxTree);
     auto analysisResult = analyser.analyse();
     if (analysisResult != 0) {
         std::cerr << "Analyse failed: " << analysisResult << std::endl;

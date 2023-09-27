@@ -6,6 +6,7 @@
 #define BOTANIST_ANALYSER_H
 
 #include <collection2/list.hpp>
+#include <collection2/tree.hpp>
 
 #include "syntaxnode.hpp"
 #include "token.hpp"
@@ -20,6 +21,9 @@ class Analyser final {
 
     /// @brief アナライザが現在見ているトークンリストのノード
     collection2::Node<Token>* currentTokenNode = nullptr;
+
+    /// @brief 構文木
+    collection2::Tree<SyntaxNode>& syntaxNodeTree;
 
     /// @brief 構文木を構成するノードのプール
     SyntaxNodeOld syntaxNodePool[64];
@@ -125,7 +129,10 @@ class Analyser final {
     SyntaxNodeOld* factor();
 
    public:
-    explicit Analyser(const collection2::List<Token>& tokenList) : tokenList(tokenList){};
+    explicit Analyser(
+        const collection2::List<Token>& tokenList,
+        collection2::Tree<SyntaxNode>& syntaxNodeTree)
+        : tokenList(tokenList), syntaxNodeTree(syntaxNodeTree){};
 
     /**
      * @brief トークナイズされた数式から構文木を生成

@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 
+#include <collection2/tree.hpp>
 #include <cstring>
 
 #include "botanist/analyser.hpp"
@@ -12,15 +13,21 @@
 #include "botanist/tokenizer.hpp"
 
 using namespace botanist;
+using namespace collection2;
 
-using TokenList = collection2::List<Token>;
+using TokenList = List<Token>;
+using SyntaxNodeTree = Tree<SyntaxNode>;
 
 /// @brief 倍精度浮動小数評価器による演算
 TEST(EvaluateTest, testAnalyseIntFormula) {
-    collection2::Node<Token> tokenPool[32];
+    Node<Token> tokenPool[32];
     TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
     Tokenizer tokenizer(tokenList);
-    Analyser analyser(tokenList);
+
+    TreeNode<SyntaxNode> nodePool[16];
+    SyntaxNodeTree syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
+
     EXPECT_EQ(tokenizer.tokenize("(((12+34) - 56*78)-78)/44+100"), 0);
     EXPECT_EQ(analyser.analyse(), 0);
     auto* rootNode = analyser.rootNode();
