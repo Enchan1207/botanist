@@ -9,6 +9,7 @@
 #include "testcase.hpp"
 
 using namespace botanist;
+using namespace collection2;
 
 namespace botanisttests {
 
@@ -57,7 +58,9 @@ TEST(testTokenize) {
     };
     const size_t patternCount = sizeof(patterns) / sizeof(struct pattern_t);
 
-    Tokenizer tokenizer;
+    Node<Token> tokenPool[16];
+    List<Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     struct pattern_t pattern;
     for (size_t i = 0; i < patternCount; i++) {
         memcpy_P(&pattern, &patterns[i], sizeof(struct pattern_t));
@@ -70,9 +73,11 @@ TEST(testTokenize) {
 TEST(testTokenizeAddSubAndCount) {
     BeginTestcase(result);
     // 整数値のみ
-    Tokenizer intPolynomialTokenizer;
+    Node<Token> tokenPool[16];
+    List<Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer intPolynomialTokenizer(tokenList);
     EXPECT_EQ(intPolynomialTokenizer.tokenize("123 + 234-345 * 456/567"), 0, result);
-    auto* intTokenizedNode = intPolynomialTokenizer.tokens();
+    auto* intTokenizedNode = tokenList.head();
     int intNodeCount = 1;
     while (intTokenizedNode->next != nullptr) {
         intTokenizedNode = intTokenizedNode->next;
@@ -81,9 +86,9 @@ TEST(testTokenizeAddSubAndCount) {
     EXPECT_EQ(intNodeCount, 9, result);
 
     // 混在
-    Tokenizer realPolynomialTokenizer;
+    Tokenizer realPolynomialTokenizer(tokenList);
     EXPECT_EQ(realPolynomialTokenizer.tokenize("12+3.4-56*7.8/90"), 0, result);
-    auto* realTokenizedNode = realPolynomialTokenizer.tokens();
+    auto* realTokenizedNode = tokenList.head();
     int realNodeCount = 1;
     while (realTokenizedNode->next != nullptr) {
         realTokenizedNode = realTokenizedNode->next;
@@ -96,9 +101,11 @@ TEST(testTokenizeAddSubAndCount) {
 /// @brief より複雑な多項式
 TEST(testTokenizeComplexPolynomial) {
     BeginTestcase(result);
-    Tokenizer complexTokenizer;
+    Node<Token> tokenPool[16];
+    List<Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer complexTokenizer(tokenList);
     EXPECT_EQ(complexTokenizer.tokenize("(12+3.4)-(56*7.8)/90"), 0, result);
-    auto* tokenizedNode = complexTokenizer.tokens();
+    auto* tokenizedNode = tokenList.head();
     int nodeCount = 1;
     while (tokenizedNode->next != nullptr) {
         tokenizedNode = tokenizedNode->next;
@@ -118,7 +125,9 @@ TEST(testTooLongToken) {
         const char* sample = "1+";
         memcpy(tooLongToken + i, sample, 2);
     }
-    Tokenizer tokenizer;
+    Node<Token> tokenPool[16];
+    List<Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     EXPECT_NE(tokenizer.tokenize(tooLongToken), 0, result);
     EndTestcase(result);
 }

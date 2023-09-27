@@ -11,6 +11,7 @@
 #include "testcase.hpp"
 
 using namespace botanist;
+using namespace collection2;
 
 namespace botanisttests {
 
@@ -32,13 +33,16 @@ TEST(testAnalyseFormulas) {
     };
     const size_t patternCount = sizeof(patterns) / sizeof(pattern_t);
 
-    Tokenizer tokenizer;
-    Analyser analyser;
+    Node<Token> tokenPool[16];
+    List<Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
+
+    Analyser analyser(tokenList);
     struct pattern_t pattern;
     for (size_t i = 0; i < patternCount; i++) {
         memcpy_P(&pattern, &patterns[i], sizeof(struct pattern_t));
         tokenizer.tokenize(pattern.source);
-        EXPECT_EQ(analyser.analyse(tokenizer.tokens()), pattern.expected, result);
+        EXPECT_EQ(analyser.analyse(), pattern.expected, result);
     }
     EndTestcase(result);
 }
@@ -59,8 +63,8 @@ TEST(testTooLongFormula) {
         }
     }
 
-    Analyser analyser;
-    auto analyseResult = analyser.analyse(tokenList.head());
+    Analyser analyser(tokenList);
+    auto analyseResult = analyser.analyse();
     EXPECT_NE(analyseResult, 0, result);
     EXPECT_EQ(analyser.rootNode(), nullptr, result);
 
