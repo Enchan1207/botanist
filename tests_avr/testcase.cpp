@@ -44,6 +44,7 @@ bool botanisttests::expect(const char* const expressionStr, bool expression) {
     if (!expression) {
         Serial.print_P(PSTR("Assertion failed. expression: "));
         Serial.println(expressionStr);
+        abort();
     }
     return expression;
 }
