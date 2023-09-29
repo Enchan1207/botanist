@@ -5,6 +5,9 @@
     "files.associations": {
         "*.cfg": "dotenv",
         "*.mcmeta": "json",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "__locale": "cpp",
+        "string": "cpp",
+        "string_view": "cpp"
     }
 }

@@ -25,26 +25,11 @@ class Analyser final {
     /// @brief 構文木
     collection2::Tree<SyntaxNode>& syntaxNodeTree;
 
-    /// @brief 構文木を構成するノードのプール
-    SyntaxNodeOld syntaxNodePool[64];
-
     /// @brief トークンリストがどこまで進んだか
     size_t tokenIndex = 0;
 
     /// @brief 構文解析結果のルートノード
-    SyntaxNodeOld* root = nullptr;
-
-    /**
-     * @brief ノードプールから未割り当てのノードを探し、発見できた場合は引数の内容を設定する
-     *
-     * @param kind 設定するノード種別
-     * @param lhs 左辺値
-     * @param rhs 右辺値
-     * @return SyntaxNodeOld* 構成されたノードへのポインタ
-     * @note ノードプールがいっぱいになっている場合はnullptrが返ります。
-     * @note ノードの内容はメンバ `currentTokenNode` より取得されます。
-     */
-    SyntaxNodeOld* createNewNode(const SyntaxNodeOld::Kind kind, SyntaxNodeOld* lhs = nullptr, SyntaxNodeOld* rhs = nullptr);
+    collection2::TreeNode<SyntaxNode>* root = nullptr;
 
     /**
      * @brief ノードプールから未割り当てのノードを探し、現在のトークンの情報を割り当てて返す
@@ -116,32 +101,34 @@ class Analyser final {
      * @brief ノードプールを初期化する
      */
     void initializeNodePool() {
-        for (size_t i = 0; i < 64; i++) {
-            auto* node = &(syntaxNodePool[i]);
-            node->kind = SyntaxNodeOld::Kind::Empty;
+        if (root == nullptr) {
+            return;
         }
+
+        // アナライザの管理するルートがあるなら、その子ノードを全部無効化する
+        syntaxNodeTree.removeChild(root);
     }
 
     /**
      * @brief アナライザが見ているトークンを式の開始とみなしてパースを試みる
      *
-     * @return SyntaxNodeOld* パース結果
+     * @return collection2::TreeNode<SyntaxNode>* パース結果
      */
-    SyntaxNodeOld* expressionOld();
+    collection2::TreeNode<SyntaxNode>* expression();
 
     /**
      * @brief アナライザが見ているトークンを単一の項とみなしてパースを試みる
      *
-     * @return SyntaxNodeOld* パース結果
+     * @return collection2::TreeNode<SyntaxNode>* パース結果
      */
-    SyntaxNodeOld* unaryOld();
+    collection2::TreeNode<SyntaxNode>* unary();
 
     /**
      * @brief アナライザが見ているトークンを単一の因子とみなしてパースを試みる
      *
      * @return SyntaxNodeOld* パース結果
      */
-    SyntaxNodeOld* factorOld();
+    collection2::TreeNode<SyntaxNode>* factor();
 
    public:
     explicit Analyser(
@@ -160,10 +147,10 @@ class Analyser final {
     /**
      * @brief 構文木のルートノードを取得
      *
-     * @return SyntaxNodeOld* 構文木のルートノード
+     * @return collection2::TreeNode<SyntaxNode>* 構文木のルートノード
      * @note 直近で行われた構文木の生成に失敗した場合はnullptrが返ります。
      */
-    SyntaxNodeOld* rootNode() {
+    collection2::TreeNode<SyntaxNode>* rootNode() {
         return root;
     }
 

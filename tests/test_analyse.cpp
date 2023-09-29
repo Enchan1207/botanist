@@ -31,15 +31,15 @@ TEST(AnalyseTest, testAnalyseValidFormula) {
     const auto* rootNode = analyser.rootNode();
 
     // 各ノードが想定通りの構造になっているか
-    EXPECT_EQ(rootNode->kind, SyntaxNodeOld::Kind::Subtract);
-    EXPECT_EQ(rootNode->lhs->kind, SyntaxNodeOld::Kind::Number);
-    EXPECT_EQ(rootNode->rhs->kind, SyntaxNodeOld::Kind::Number);
+    EXPECT_EQ(rootNode->element.kind, SyntaxNode::Kind::Subtract);
+    EXPECT_EQ(rootNode->lhs->element.kind, SyntaxNode::Kind::Number);
+    EXPECT_EQ(rootNode->rhs->element.kind, SyntaxNode::Kind::Number);
 
     // 内容は正当か
     char buf[5] = {0};
-    memcpy(buf, rootNode->lhs->content, rootNode->lhs->length);
+    memcpy(buf, rootNode->lhs->element.content, rootNode->lhs->element.length);
     EXPECT_EQ(strcmp(buf, "1.23"), 0);
-    memcpy(buf, rootNode->rhs->content, rootNode->rhs->length);
+    memcpy(buf, rootNode->rhs->element.content, rootNode->rhs->element.length);
     EXPECT_EQ(strcmp(buf, "45.6"), 0);
 }
 
