@@ -23,8 +23,8 @@ int main(int argc, char const* argv[]) {
     char const* formula = argv[1];
 
     // トークンリストを作成
-    Node<botanist::Token> tokenPool[64];
-    List<botanist::Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Node<Token> tokenPool[64];
+    List<Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
     Tokenizer tokenizer(tokenList);
 
     // 構文ツリーを作成
@@ -42,16 +42,17 @@ int main(int argc, char const* argv[]) {
         return 1;
     }
 
-    Serializer serializer;
-    auto serializedRootNode = serializer.serializeTreeOld(analyser.rootNode());
-    if (serializedRootNode == nullptr) {
-        std::cerr << "failed to serialize" << std::endl;
-        return 1;
-    }
+    // 構文ツリーを直列化
+    Node<SyntaxNode> syntaxNodePool[64];
+    List<SyntaxNode> syntaxNodeList(syntaxNodePool, sizeof(syntaxNodePool) / sizeof(syntaxNodePool[0]));
+    Serializer serializer(syntaxNodeList);
+    serializer.serializeTree(analyser.rootNode());
 
     // 評価
-    DoubleEvaluator evaluator;
-    double result = evaluator.evaluate(serializedRootNode);
+    double calcStackPool[64];
+    Stack<double> calcStack(calcStackPool, sizeof(calcStackPool) / sizeof(calcStackPool[0]));
+    DoubleEvaluator evaluator(calcStack);
+    double result = evaluator.evaluate(syntaxNodeList);
     std::cout << formula << " = " << result << std::endl;
     return 0;
 }
