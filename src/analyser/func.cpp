@@ -38,6 +38,19 @@ SyntaxNodeOld* Analyser::createNewNode(const SyntaxNodeOld::Kind kind, SyntaxNod
     return freeNode;
 }
 
+collection2::TreeNode<SyntaxNode>* Analyser::createNewNode(const SyntaxNode::Kind kind, collection2::TreeNode<SyntaxNode>* lhs, collection2::TreeNode<SyntaxNode>* rhs) {
+    // ノードプールからノードを確保
+    auto* newNode = syntaxNodeTree.retainNode({kind, currentTokenNode->element.content, currentTokenNode->element.length});
+    if (newNode == nullptr) {
+        return nullptr;
+    }
+
+    // 確保したノードに左辺・右辺を接続して返す
+    newNode->lhs = lhs;
+    newNode->rhs = rhs;
+    return newNode;
+}
+
 bool Analyser::expect(const Token::Kind kind) const {
     // 終端チェック
     if (currentTokenNode == nullptr) {

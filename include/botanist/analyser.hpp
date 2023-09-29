@@ -47,6 +47,21 @@ class Analyser final {
     SyntaxNodeOld* createNewNode(const SyntaxNodeOld::Kind kind, SyntaxNodeOld* lhs = nullptr, SyntaxNodeOld* rhs = nullptr);
 
     /**
+     * @brief ノードプールから未割り当てのノードを探し、現在のトークンの情報を割り当てて返す
+     *
+     * @param kind 設定するノード種別
+     * @param lhs 左辺値
+     * @param rhs 右辺値
+     * @return collection2::TreeNode<SyntaxNode>* 構成されたノードへのポインタ
+     * @note ノードプールがいっぱいになっている場合はnullptrが返ります。
+     *       ノードの内容はメンバ `currentTokenNode` より取得されます。
+     */
+    collection2::TreeNode<SyntaxNode>* createNewNode(
+        const SyntaxNode::Kind kind,
+        collection2::TreeNode<SyntaxNode>* lhs = nullptr,
+        collection2::TreeNode<SyntaxNode>* rhs = nullptr);
+
+    /**
      * @brief 今見ているトークンの種類と引数が一致するか調べる
      *
      * @param kind 比較するトークンの種類
@@ -112,21 +127,21 @@ class Analyser final {
      *
      * @return SyntaxNodeOld* パース結果
      */
-    SyntaxNodeOld* expression();
+    SyntaxNodeOld* expressionOld();
 
     /**
      * @brief アナライザが見ているトークンを単一の項とみなしてパースを試みる
      *
      * @return SyntaxNodeOld* パース結果
      */
-    SyntaxNodeOld* unary();
+    SyntaxNodeOld* unaryOld();
 
     /**
      * @brief アナライザが見ているトークンを単一の因子とみなしてパースを試みる
      *
      * @return SyntaxNodeOld* パース結果
      */
-    SyntaxNodeOld* factor();
+    SyntaxNodeOld* factorOld();
 
    public:
     explicit Analyser(
