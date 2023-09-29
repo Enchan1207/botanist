@@ -4,6 +4,8 @@
 
 #include <gtest/gtest.h>
 
+#include <collection2/list.hpp>
+#include <collection2/stack.hpp>
 #include <collection2/tree.hpp>
 #include <cstring>
 
@@ -32,10 +34,14 @@ TEST(EvaluateTest, testAnalyseIntFormula) {
     EXPECT_EQ(analyser.analyse(), 0);
     auto* rootNode = analyser.rootNode();
     EXPECT_NE(rootNode, nullptr);
-    Serializer serializer;
-    auto* serializedNode = serializer.serializeTree(rootNode);
+    Node<SyntaxNode> syntaxNodePool[16];
+    List<SyntaxNode> syntaxNodeList(syntaxNodePool, sizeof(syntaxNodePool) / sizeof(syntaxNodePool[0]));
+    Serializer serializer(syntaxNodeList);
+    serializer.serializeTree(rootNode);
 
-    DoubleEvaluator evaluator;
-    auto result = static_cast<int>(evaluator.evaluate(serializedNode));
+    double calcStackPool[16];
+    Stack<double> calcStack(calcStackPool, sizeof(calcStackPool) / sizeof(calcStackPool[0]));
+    DoubleEvaluator evaluator(calcStack);
+    auto result = static_cast<int>(evaluator.evaluate(syntaxNodeList));
     EXPECT_EQ(result, 0);  // (((12+34)-56*78)-78)/44+100=0
 }

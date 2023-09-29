@@ -29,6 +29,7 @@ TEST(AnalyseTest, testAnalyseValidFormula) {
     Analyser analyser(tokenList, syntaxTree);
     EXPECT_EQ(analyser.analyse(), 0);
     const auto* rootNode = analyser.rootNode();
+    EXPECT_NE(rootNode, nullptr);
 
     // 各ノードが想定通りの構造になっているか
     EXPECT_EQ(rootNode->element.kind, SyntaxNode::Kind::Subtract);
@@ -136,7 +137,7 @@ TEST(AnalyseTest, testContinuousAnalysis) {
 /// @brief プールが埋まるほど複雑な数式
 TEST(AnalyseTest, testTooLongFormula) {
     // 1+1+...+1+1 と続くトークンリストを生成する
-    constexpr size_t tokenLength = 129;  // must be odd number
+    constexpr size_t tokenLength = 65;  // must be odd number
     Node<Token> internalTokensData[tokenLength];
     List<Token> tokenList(internalTokensData, tokenLength);
     for (size_t i = 0; i < tokenLength; i++) {
@@ -147,7 +148,7 @@ TEST(AnalyseTest, testTooLongFormula) {
         }
     }
 
-    TreeNode<SyntaxNode> nodePool[16];
+    TreeNode<SyntaxNode> nodePool[64];
     SyntaxNodeTree syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
     Analyser analyser(tokenList, syntaxTree);
     auto result = analyser.analyse();

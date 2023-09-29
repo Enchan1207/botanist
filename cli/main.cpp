@@ -55,7 +55,7 @@ int main(int argc, char const* argv[]) {
     // 構文木を直列化し、スタックマシンで動かせるレベルまで持っていく
     std::cout << "Serialize..." << std::endl;
     botanist::Serializer serializer;
-    auto* serializedNode = serializer.serializeTree(rootNode);
+    auto* serializedNode = serializer.serializeTreeOld(rootNode);
     serializer.dumpSeralizedNodeList();
 
     // 評価器に渡す

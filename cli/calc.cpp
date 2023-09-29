@@ -43,7 +43,7 @@ int main(int argc, char const* argv[]) {
     }
 
     Serializer serializer;
-    auto serializedRootNode = serializer.serializeTree(analyser.rootNode());
+    auto serializedRootNode = serializer.serializeTreeOld(analyser.rootNode());
     if (serializedRootNode == nullptr) {
         std::cerr << "failed to serialize" << std::endl;
         return 1;

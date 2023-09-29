@@ -8,9 +8,16 @@ namespace botanist {
 
 collection2::TreeNode<SyntaxNode>* Analyser::createNewNode(const SyntaxNode::Kind kind, collection2::TreeNode<SyntaxNode>* lhs, collection2::TreeNode<SyntaxNode>* rhs) {
     // ノードプールからノードを確保
-    auto* newNode = syntaxNodeTree.retainNode({kind, currentTokenNode->element.content, currentTokenNode->element.length});
+    auto* newNode = syntaxNodeTree.retainNode({kind, nullptr, 0});
     if (newNode == nullptr) {
         return nullptr;
+    }
+
+    // トークンがnullでなければ値をセット
+    if (currentTokenNode != nullptr) {
+        auto currentTokenElement = currentTokenNode->element;
+        newNode->element.content = currentTokenElement.content;
+        newNode->element.length = currentTokenElement.length;
     }
 
     // 確保したノードに左辺・右辺を接続して返す

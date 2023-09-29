@@ -101,12 +101,8 @@ class Analyser final {
      * @brief ノードプールを初期化する
      */
     void initializeNodePool() {
-        if (root == nullptr) {
-            return;
-        }
-
-        // アナライザの管理するルートがあるなら、その子ノードを全部無効化する
-        syntaxNodeTree.removeChild(root);
+        syntaxNodeTree.initializeTreeNodePool();
+        root = nullptr;
     }
 
     /**
@@ -126,7 +122,7 @@ class Analyser final {
     /**
      * @brief アナライザが見ているトークンを単一の因子とみなしてパースを試みる
      *
-     * @return SyntaxNodeOld* パース結果
+     * @return collection2::TreeNode<SyntaxNode>* パース結果
      */
     collection2::TreeNode<SyntaxNode>* factor();
 

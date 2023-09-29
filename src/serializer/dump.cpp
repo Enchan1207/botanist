@@ -20,27 +20,27 @@ void Serializer::dumpSeralizedNodeList() const {
 
     // 順に読む
     while (headNode != nullptr) {
-        const auto* node = headNode->element;
+        const auto node = headNode->element;
 
-        char contentStr[node->length + 1];
-        memset(contentStr, '\0', node->length + 1);
+        char contentStr[node.length + 1];
+        memset(contentStr, '\0', node.length + 1);
 
-        switch (node->kind) {
-            case SyntaxNodeOld::Kind::Number:
-                memcpy(contentStr, node->content, node->length);
+        switch (node.kind) {
+            case SyntaxNode::Kind::Number:
+                memcpy(contentStr, node.content, node.length);
                 std::cout << "push " << contentStr << std::endl;
                 break;
 
-            case SyntaxNodeOld::Kind::Add:
+            case SyntaxNode::Kind::Add:
                 std::cout << "add" << contentStr << std::endl;
                 break;
-            case SyntaxNodeOld::Kind::Subtract:
+            case SyntaxNode::Kind::Subtract:
                 std::cout << "sub" << contentStr << std::endl;
                 break;
-            case SyntaxNodeOld::Kind::Multiply:
+            case SyntaxNode::Kind::Multiply:
                 std::cout << "mul" << contentStr << std::endl;
                 break;
-            case SyntaxNodeOld::Kind::Divide:
+            case SyntaxNode::Kind::Divide:
                 std::cout << "div" << contentStr << std::endl;
                 break;
 

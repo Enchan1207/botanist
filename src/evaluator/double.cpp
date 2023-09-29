@@ -6,16 +6,16 @@
 
 namespace botanist {
 
-bool DoubleEvaluator::getValueFromNode(const SyntaxNodeOld* node, double& value) const {
+bool DoubleEvaluator::getValueFromNode(const SyntaxNode& node, double& value) const {
     // 数値ノードを期待する
-    if (node == nullptr || node->kind != SyntaxNodeOld::Kind::Number) {
+    if (node.kind != SyntaxNode::Kind::Number) {
         return false;
     }
 
     // 文字列を取り出す
-    char contentStr[node->length + 1];
-    memset(contentStr, '\0', node->length + 1);
-    memcpy(contentStr, node->content, node->length);
+    char contentStr[node.length + 1];
+    memset(contentStr, '\0', node.length + 1);
+    memcpy(contentStr, node.content, node.length);
 
     // strtodに渡す
     const char* contentStrConst = contentStr;
@@ -28,10 +28,10 @@ bool DoubleEvaluator::getValueFromNode(const SyntaxNodeOld* node, double& value)
     return true;
 }
 
-double DoubleEvaluator::evaluate(collection2::Node<SyntaxNodeOld*>* node) {
-    auto* currentNode = node;
+double DoubleEvaluator::evaluate(collection2::List<SyntaxNode>& nodeList) {
+    auto* currentNode = nodeList.head();
     while (currentNode != nullptr) {
-        const auto* syntaxNode = currentNode->element;
+        const auto syntaxNode = currentNode->element;
 
         // 数値ならスタックにpush
         double value = 0;
@@ -48,20 +48,20 @@ double DoubleEvaluator::evaluate(collection2::Node<SyntaxNodeOld*>* node) {
         calcStack.pop(&lhs);
 
         // 計算して積む
-        switch (syntaxNode->kind) {
-            case SyntaxNodeOld::Kind::Add:
+        switch (syntaxNode.kind) {
+            case SyntaxNode::Kind::Add:
                 calcStack.push(lhs + rhs);
                 break;
 
-            case SyntaxNodeOld::Kind::Subtract:
+            case SyntaxNode::Kind::Subtract:
                 calcStack.push(lhs - rhs);
                 break;
 
-            case SyntaxNodeOld::Kind::Multiply:
+            case SyntaxNode::Kind::Multiply:
                 calcStack.push(lhs * rhs);
                 break;
 
-            case SyntaxNodeOld::Kind::Divide:
+            case SyntaxNode::Kind::Divide:
                 calcStack.push(lhs / rhs);
                 break;
 
