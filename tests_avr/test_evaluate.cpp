@@ -4,11 +4,17 @@
 
 #include <string.h>
 
+#include <collection2/list.hpp>
+#include <collection2/stack.hpp>
+#include <collection2/tree.hpp>
+
 #include "botanist/analyser.hpp"
 #include "botanist/evaluator/double.hpp"
 #include "botanist/serializer.hpp"
 #include "botanist/tokenizer.hpp"
 #include "testcase.hpp"
+
+#define arraySize(array) sizeof(array) / sizeof(array[0])
 
 using namespace botanist;
 using namespace collection2;
@@ -19,20 +25,43 @@ namespace botanisttests {
 TEST(testAnalyseIntFormula) {
     BeginTestcase(result);
 
-    Node<Token> tokenPool[16];
-    List<Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
-    Tokenizer tokenizer(tokenList);
-    EXPECT_EQ(tokenizer.tokenize("(((12+34) - 56*78)-78)/44+100"), 0, result);
-    Analyser analyser(tokenList);
-    EXPECT_EQ(analyser.analyse(), 0, result);
-    auto* rootNode = analyser.rootNode();
-    EXPECT_NE(rootNode, nullptr, result);
-    Serializer serializer;
-    auto* serializedNode = serializer.serializeTree(rootNode);
+    const uint8_t poolCapacity = 32;
 
-    DoubleEvaluator evaluator;
-    auto evalResult = static_cast<int>(evaluator.evaluate(serializedNode));
-    EXPECT_EQ(evalResult, 0, result);  // (((12+34)-56*78)-78)/44+100=0
+    // トークナイザを構成
+    Node<Token> tokenPool[poolCapacity];
+    List<Token> tokenList(tokenPool, arraySize(tokenPool));
+    Tokenizer tokenizer(tokenList);
+
+    // 数式をトークナイズ
+    EXPECT_EQ(tokenizer.tokenize("(44/22*3+(59-100))/7+10"), 0, result);
+    EXPECT_EQ(tokenList.amount(), 17, result);
+
+    // アナライザを構成
+    TreeNode<SyntaxNode> treeNodePool[poolCapacity];
+    Tree<SyntaxNode> syntaxTree(treeNodePool, arraySize(treeNodePool));
+    Analyser analyser(tokenList, syntaxTree);
+
+    // トークンリストから構文木を生成
+    EXPECT_EQ(analyser.analyse(), 0, result);
+    const auto* rootNode = analyser.rootNode();
+    EXPECT_NE(rootNode, nullptr, result);
+
+    // シリアライザを構成
+    Node<SyntaxNode> serializedNodePool[poolCapacity];
+    List<SyntaxNode> syntaxNodeList(serializedNodePool, arraySize(serializedNodePool));
+    Serializer serializer(syntaxNodeList);
+
+    // ノードを直列化
+    serializer.serializeTree(rootNode);
+
+    // 評価器を構成
+    double calcStackPool[poolCapacity];
+    Stack<double> calcStack(calcStackPool, arraySize(calcStackPool));
+    DoubleEvaluator evaluator(calcStack);
+
+    // 直列化したノードを投入して計算 回答を確認
+    auto evalResult = static_cast<int>(evaluator.evaluate(syntaxNodeList));
+    EXPECT_EQ(evalResult, 5, result);
 
     EndTestcase(result);
 }

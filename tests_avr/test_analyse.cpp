@@ -37,7 +37,9 @@ TEST(testAnalyseFormulas) {
     List<Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
     Tokenizer tokenizer(tokenList);
 
-    Analyser analyser(tokenList);
+    TreeNode<SyntaxNode> nodePool[16];
+    Tree<SyntaxNode> syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
     struct pattern_t pattern;
     for (size_t i = 0; i < patternCount; i++) {
         memcpy_P(&pattern, &patterns[i], sizeof(struct pattern_t));
@@ -63,7 +65,9 @@ TEST(testTooLongFormula) {
         }
     }
 
-    Analyser analyser(tokenList);
+    TreeNode<SyntaxNode> nodePool[16];
+    Tree<SyntaxNode> syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
     auto analyseResult = analyser.analyse();
     EXPECT_NE(analyseResult, 0, result);
     EXPECT_EQ(analyser.rootNode(), nullptr, result);
