@@ -22,7 +22,7 @@ include(FetchContent)
 FetchContent_Declare(
     collection2
     GIT_REPOSITORY https://github.com/Enchan1207/collection2
-    GIT_TAG v0.5.0
+    GIT_TAG issue/24-retain-node
 )
 FetchContent_MakeAvailable(collection2)
 
