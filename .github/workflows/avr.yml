@@ -40,7 +40,9 @@ jobs:
           ~/arduino-cli/arduino-cli core install arduino:avr
 
       - name: setup QEMU
-        run: sudo apt-get -y install qemu-system
+        run: |
+          sudo apt-get -y update
+          sudo apt-get -y install qemu-system
 
       - name: configure for ${{matrix.mcu}}
         run: |
