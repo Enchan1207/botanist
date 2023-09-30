@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['kind_0',['kind',['../structbotanist_1_1SyntaxNode.html#aab4847bd18454d3d475eac7928e98850',1,'botanist::SyntaxNode::kind()'],['../structbotanist_1_1Token.html#a4cc1f7b2cc9b359e28decf92e8b6d975',1,'botanist::Token::kind()']]],
-  ['kind_1',['Kind',['../structbotanist_1_1SyntaxNode.html#a9b426e4ea73860d7bca98586a59e2bc9',1,'botanist::SyntaxNode::Kind()'],['../structbotanist_1_1Token.html#a632a66afac3acfad099e31bc40786a72',1,'botanist::Token::Kind()']]]
+  ['length_0',['length',['../structbotanist_1_1SyntaxNode.html#aa96e28fceef3c636f62347f9b8752802',1,'botanist::SyntaxNode::length()'],['../structbotanist_1_1Token.html#a183ed901372ca408a2ff9f26190a276c',1,'botanist::Token::length()']]]
 ];

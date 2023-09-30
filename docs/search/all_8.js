@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['length_0',['length',['../structbotanist_1_1SyntaxNode.html#aa96e28fceef3c636f62347f9b8752802',1,'botanist::SyntaxNode::length()'],['../structbotanist_1_1Token.html#a183ed901372ca408a2ff9f26190a276c',1,'botanist::Token::length()']]]
+  ['multiply_0',['Multiply',['../structbotanist_1_1SyntaxNode.html#a9b426e4ea73860d7bca98586a59e2bc9ae257376d913f3b53cbb4a9b19d770648',1,'botanist::SyntaxNode']]]
 ];

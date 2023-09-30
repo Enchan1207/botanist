@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['home_0',['Home',['../index.html',1,'']]]
+  ['botanist_20documentation_0',['botanist documentation',['../index.html',1,'']]]
 ];

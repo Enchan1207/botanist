@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['operator_0',['Operator',['../structbotanist_1_1Token.html#a632a66afac3acfad099e31bc40786a72ae1b3ec89ead7f83a9245ed5c9cacfdbf',1,'botanist::Token']]]
+  ['rootnode_0',['rootNode',['../classbotanist_1_1Analyser.html#a7f1a46b692c4bc13f5c04764008f95ad',1,'botanist::Analyser']]]
 ];
