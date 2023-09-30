@@ -6,6 +6,7 @@
 #define BOTANIST_ANALYSER_H
 
 #include <collection2/list.hpp>
+#include <collection2/tree.hpp>
 
 #include "syntaxnode.hpp"
 #include "token.hpp"
@@ -21,26 +22,29 @@ class Analyser final {
     /// @brief アナライザが現在見ているトークンリストのノード
     collection2::Node<Token>* currentTokenNode = nullptr;
 
-    /// @brief 構文木を構成するノードのプール
-    SyntaxNode syntaxNodePool[64];
+    /// @brief 構文木
+    collection2::Tree<SyntaxNode>& syntaxNodeTree;
 
     /// @brief トークンリストがどこまで進んだか
     size_t tokenIndex = 0;
 
     /// @brief 構文解析結果のルートノード
-    SyntaxNode* root = nullptr;
+    collection2::TreeNode<SyntaxNode>* root = nullptr;
 
     /**
-     * @brief ノードプールから未割り当てのノードを探し、発見できた場合は引数の内容を設定する
+     * @brief ノードプールから未割り当てのノードを探し、現在のトークンの情報を割り当てて返す
      *
      * @param kind 設定するノード種別
      * @param lhs 左辺値
      * @param rhs 右辺値
-     * @return SyntaxNode* 構成されたノードへのポインタ
+     * @return collection2::TreeNode<SyntaxNode>* 構成されたノードへのポインタ
      * @note ノードプールがいっぱいになっている場合はnullptrが返ります。
-     * @note ノードの内容はメンバ `currentTokenNode` より取得されます。
+     *       ノードの内容はメンバ `currentTokenNode` より取得されます。
      */
-    SyntaxNode* createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs = nullptr, SyntaxNode* rhs = nullptr);
+    collection2::TreeNode<SyntaxNode>* createNewNode(
+        const SyntaxNode::Kind kind,
+        collection2::TreeNode<SyntaxNode>* lhs = nullptr,
+        collection2::TreeNode<SyntaxNode>* rhs = nullptr);
 
     /**
      * @brief 今見ているトークンの種類と引数が一致するか調べる
@@ -97,35 +101,36 @@ class Analyser final {
      * @brief ノードプールを初期化する
      */
     void initializeNodePool() {
-        for (size_t i = 0; i < 64; i++) {
-            auto* node = &(syntaxNodePool[i]);
-            node->kind = SyntaxNode::Kind::Empty;
-        }
+        syntaxNodeTree.initializeTreeNodePool();
+        root = nullptr;
     }
 
     /**
      * @brief アナライザが見ているトークンを式の開始とみなしてパースを試みる
      *
-     * @return SyntaxNode* パース結果
+     * @return collection2::TreeNode<SyntaxNode>* パース結果
      */
-    SyntaxNode* expression();
+    collection2::TreeNode<SyntaxNode>* expression();
 
     /**
      * @brief アナライザが見ているトークンを単一の項とみなしてパースを試みる
      *
-     * @return SyntaxNode* パース結果
+     * @return collection2::TreeNode<SyntaxNode>* パース結果
      */
-    SyntaxNode* unary();
+    collection2::TreeNode<SyntaxNode>* unary();
 
     /**
      * @brief アナライザが見ているトークンを単一の因子とみなしてパースを試みる
      *
-     * @return SyntaxNode* パース結果
+     * @return collection2::TreeNode<SyntaxNode>* パース結果
      */
-    SyntaxNode* factor();
+    collection2::TreeNode<SyntaxNode>* factor();
 
    public:
-    explicit Analyser(const collection2::List<Token>& tokenList) : tokenList(tokenList){};
+    explicit Analyser(
+        const collection2::List<Token>& tokenList,
+        collection2::Tree<SyntaxNode>& syntaxNodeTree)
+        : tokenList(tokenList), syntaxNodeTree(syntaxNodeTree){};
 
     /**
      * @brief トークナイズされた数式から構文木を生成
@@ -138,10 +143,10 @@ class Analyser final {
     /**
      * @brief 構文木のルートノードを取得
      *
-     * @return SyntaxNode* 構文木のルートノード
+     * @return collection2::TreeNode<SyntaxNode>* 構文木のルートノード
      * @note 直近で行われた構文木の生成に失敗した場合はnullptrが返ります。
      */
-    SyntaxNode* rootNode() {
+    collection2::TreeNode<SyntaxNode>* rootNode() {
         return root;
     }
 
@@ -149,21 +154,20 @@ class Analyser final {
 
     /**
      * @brief 構文木をダンプ
-     *
-     * @param node 対象のノード
+     * @note ルートノードがない場合ダンプは実行されません。
      */
-    void dumpSyntaxTree(SyntaxNode* node) const;
+    void dumpSyntaxTree() const;
 
     /**
      * @brief 構文ノードをダンプ
      *
-     * @param node 対象のノード
+     * @param nodePtr 対象のノードへのポインタ
      */
-    void dumpSyntaxNode(SyntaxNode* node) const;
+    void dumpSyntaxNode(collection2::TreeNode<botanist::SyntaxNode>* nodePtr) const;
 
 #else
-    void dumpSyntaxTree(SyntaxNode* node) const = delete;
-    void dumpSyntaxNode(SyntaxNode* node) const = delete;
+    void dumpSyntaxTree() const = delete;
+    void dumpSyntaxNode(collection2::TreeNode<botanist::SyntaxNode>* nodePtr) const = delete;
 #endif
 };
 

@@ -5,46 +5,54 @@
 #include <gtest/gtest.h>
 
 #include <collection2/list.hpp>
+#include <collection2/tree.hpp>
 #include <cstring>
 
 #include "botanist/analyser.hpp"
 #include "botanist/tokenizer.hpp"
 
 using namespace botanist;
+using namespace collection2;
 
-using TokenList = collection2::List<Token>;
+using TokenList = List<Token>;
+using SyntaxNodeTree = Tree<SyntaxNode>;
 
 /// @brief 正当な単項式
 TEST(AnalyseTest, testAnalyseValidFormula) {
-    // 先にトークナイザ側でトークン列を生成しておく必要がある
-    collection2::Node<Token> tokenPool[16];
+    Node<Token> tokenPool[16];
     TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
     Tokenizer tokenizer(tokenList);
     EXPECT_EQ(tokenizer.tokenize("1.23-45.6"), 0);
 
-    Analyser analyser(tokenList);
+    TreeNode<SyntaxNode> nodePool[16];
+    SyntaxNodeTree syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
     EXPECT_EQ(analyser.analyse(), 0);
     const auto* rootNode = analyser.rootNode();
+    EXPECT_NE(rootNode, nullptr);
 
     // 各ノードが想定通りの構造になっているか
-    EXPECT_EQ(rootNode->kind, SyntaxNode::Kind::Subtract);
-    EXPECT_EQ(rootNode->lhs->kind, SyntaxNode::Kind::Number);
-    EXPECT_EQ(rootNode->rhs->kind, SyntaxNode::Kind::Number);
+    EXPECT_EQ(rootNode->element.kind, SyntaxNode::Kind::Subtract);
+    EXPECT_EQ(rootNode->lhs->element.kind, SyntaxNode::Kind::Number);
+    EXPECT_EQ(rootNode->rhs->element.kind, SyntaxNode::Kind::Number);
 
     // 内容は正当か
     char buf[5] = {0};
-    memcpy(buf, rootNode->lhs->content, rootNode->lhs->length);
+    memcpy(buf, rootNode->lhs->element.content, rootNode->lhs->element.length);
     EXPECT_EQ(strcmp(buf, "1.23"), 0);
-    memcpy(buf, rootNode->rhs->content, rootNode->rhs->length);
+    memcpy(buf, rootNode->rhs->element.content, rootNode->rhs->element.length);
     EXPECT_EQ(strcmp(buf, "45.6"), 0);
 }
 
 /// @brief 不正な単項式
 TEST(AnalyseTest, testAnalyseInvalidUnary) {
-    collection2::Node<Token> tokenPool[16];
+    Node<Token> tokenPool[16];
     TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
     Tokenizer tokenizer(tokenList);
-    Analyser analyser(tokenList);
+
+    TreeNode<SyntaxNode> nodePool[16];
+    SyntaxNodeTree syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
     EXPECT_EQ(tokenizer.tokenize("12*"), 0);
     EXPECT_EQ(analyser.analyse(), 2);
     EXPECT_EQ(analyser.rootNode(), nullptr);
@@ -52,10 +60,13 @@ TEST(AnalyseTest, testAnalyseInvalidUnary) {
 
 /// @brief 不正な数式
 TEST(AnalyseTest, testAnalyseInvalidFormula) {
-    collection2::Node<Token> tokenPool[16];
+    Node<Token> tokenPool[16];
     TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
     Tokenizer tokenizer(tokenList);
-    Analyser analyser(tokenList);
+
+    TreeNode<SyntaxNode> nodePool[16];
+    SyntaxNodeTree syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
     EXPECT_EQ(tokenizer.tokenize("1++1"), 0);
     EXPECT_EQ(analyser.analyse(), 2);
     EXPECT_EQ(analyser.rootNode(), nullptr);
@@ -63,10 +74,13 @@ TEST(AnalyseTest, testAnalyseInvalidFormula) {
 
 /// @brief 無を解析
 TEST(AnalyseTest, testAnalyseEmptyTokens) {
-    collection2::Node<Token> tokenPool[16];
+    Node<Token> tokenPool[16];
     TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
     Tokenizer tokenizer(tokenList);
-    Analyser analyser(tokenList);
+
+    TreeNode<SyntaxNode> nodePool[16];
+    SyntaxNodeTree syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
     EXPECT_EQ(tokenizer.tokenize(""), 0);
     EXPECT_EQ(analyser.analyse(), 1);
     const auto* rootNode = analyser.rootNode();
@@ -75,10 +89,13 @@ TEST(AnalyseTest, testAnalyseEmptyTokens) {
 
 /// @brief さまざまな長さの数式を連続で構文木に変換する
 TEST(AnalyseTest, testContinuousAnalysis) {
-    collection2::Node<Token> tokenPool[16];
+    Node<Token> tokenPool[16];
     TokenList tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
-    Analyser analyser(tokenList);
     Tokenizer tokenizer(tokenList);
+
+    TreeNode<SyntaxNode> nodePool[16];
+    SyntaxNodeTree syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
 
     EXPECT_EQ(tokenizer.tokenize("1.23"), 0);
     EXPECT_EQ(analyser.analyse(), 0);
@@ -120,9 +137,9 @@ TEST(AnalyseTest, testContinuousAnalysis) {
 /// @brief プールが埋まるほど複雑な数式
 TEST(AnalyseTest, testTooLongFormula) {
     // 1+1+...+1+1 と続くトークンリストを生成する
-    constexpr size_t tokenLength = 129;  // must be odd number
-    collection2::Node<Token> internalTokensData[tokenLength];
-    collection2::List<Token> tokenList(internalTokensData, tokenLength);
+    constexpr size_t tokenLength = 65;  // must be odd number
+    Node<Token> internalTokensData[tokenLength];
+    List<Token> tokenList(internalTokensData, tokenLength);
     for (size_t i = 0; i < tokenLength; i++) {
         if (i % 2 == 0) {
             tokenList.append(Token(Token::Kind::Number, "1", 1));
@@ -131,7 +148,9 @@ TEST(AnalyseTest, testTooLongFormula) {
         }
     }
 
-    Analyser analyser(tokenList);
+    TreeNode<SyntaxNode> nodePool[64];
+    SyntaxNodeTree syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
     auto result = analyser.analyse();
     EXPECT_NE(result, 0);
     EXPECT_EQ(analyser.rootNode(), nullptr);

@@ -6,6 +6,7 @@
 #define BOTANIST_SERIALIZER_H
 
 #include <collection2/list.hpp>
+#include <collection2/tree.hpp>
 
 #include "syntaxnode.hpp"
 
@@ -14,29 +15,25 @@ namespace botanist {
 /// @brief 構文木をスタックマシンが実行可能な形に変換する
 class Serializer {
    private:
-    /// @brief 構文ノードリストを管理する配列
-    collection2::Node<SyntaxNode*> internalNodesData[64];
-
-    /// @brief 直列化された構文ノードのリスト
-    collection2::List<SyntaxNode*> syntaxNodeList;
+    /// @brief 直列化された構文ノードへのポインタを格納するリスト
+    collection2::List<SyntaxNode>& syntaxNodeList;
 
     /**
-     * @brief 構文ノードをスタックマシンで処理できる形に並べ替える
+     * @brief ノードを直列化してリストに積む
      *
-     * @param node 対象となるノード
+     * @param nodePtr
      */
-    void serializeNode(SyntaxNode* node);
+    void serialize(const collection2::TreeNode<SyntaxNode>* nodePtr);
 
    public:
-    Serializer() : syntaxNodeList(internalNodesData, sizeof(internalNodesData) / sizeof(internalNodesData[0])){};
+    explicit Serializer(collection2::List<SyntaxNode>& syntaxNodeList) : syntaxNodeList(syntaxNodeList){};
 
     /**
-     * @brief 構文木をスタックマシンで処理できる形に並べ替え、先頭へのポインタを返す
+     * @brief 構文木をスタックマシンで処理できる形に並べ替え、ノードリストを更新する
      *
-     * @param node ツリーのルートノード
-     * @return collection2::Node<SyntaxNode*>* シリアライズされたツリーの先頭へのポインタ
+     * @param rootNode 構文木のルートノードへのポインタ
      */
-    collection2::Node<SyntaxNode*>* serializeTree(SyntaxNode* rootNode);
+    void serializeTree(const collection2::TreeNode<SyntaxNode>* rootNode);
 
 #ifndef HEADLESS
 

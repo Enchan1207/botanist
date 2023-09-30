@@ -1,5 +1,13 @@
 {
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.exportCompileCommandsFile": true,
-    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json"
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "files.associations": {
+        "*.cfg": "dotenv",
+        "*.mcmeta": "json",
+        "ostream": "cpp",
+        "__locale": "cpp",
+        "string": "cpp",
+        "string_view": "cpp"
+    }
 }

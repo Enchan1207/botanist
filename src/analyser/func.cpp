@@ -6,36 +6,24 @@
 
 namespace botanist {
 
-SyntaxNode* Analyser::createNewNode(const SyntaxNode::Kind kind, SyntaxNode* lhs, SyntaxNode* rhs) {
-    // フリーなノードを探す
-    SyntaxNode* freeNode = nullptr;
-    // TODO: 要素数ハードコードの削除
-    for (size_t i = 0; i < 64; i++) {
-        auto* node = &(syntaxNodePool[i]);
-        if (node->kind != SyntaxNode::Kind::Empty) {
-            continue;
-        }
-        freeNode = node;
-        break;
-    }
-
-    if (freeNode == nullptr) {
-        // 空きがなかった
+collection2::TreeNode<SyntaxNode>* Analyser::createNewNode(const SyntaxNode::Kind kind, collection2::TreeNode<SyntaxNode>* lhs, collection2::TreeNode<SyntaxNode>* rhs) {
+    // ノードプールからノードを確保
+    auto* newNode = syntaxNodeTree.retainNode({kind, nullptr, 0});
+    if (newNode == nullptr) {
         return nullptr;
     }
 
-    freeNode->kind = kind;
-    freeNode->lhs = lhs;
-    freeNode->rhs = rhs;
+    // トークンがnullでなければ値をセット
     if (currentTokenNode != nullptr) {
-        auto token = currentTokenNode->element;
-        freeNode->content = token.content;
-        freeNode->length = token.length;
-    } else {
-        freeNode->content = nullptr;
-        freeNode->length = 0;
+        auto currentTokenElement = currentTokenNode->element;
+        newNode->element.content = currentTokenElement.content;
+        newNode->element.length = currentTokenElement.length;
     }
-    return freeNode;
+
+    // 確保したノードに左辺・右辺を接続して返す
+    newNode->lhs = lhs;
+    newNode->rhs = rhs;
+    return newNode;
 }
 
 bool Analyser::expect(const Token::Kind kind) const {

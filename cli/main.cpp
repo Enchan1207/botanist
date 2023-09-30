@@ -2,6 +2,8 @@
 // botanist
 //
 
+#include <collection2/list.hpp>
+#include <collection2/tree.hpp>
 #include <iostream>
 
 #include "botanist/analyser.hpp"
@@ -10,7 +12,8 @@
 #include "botanist/tokenizer.hpp"
 
 using namespace collection2;
-using TokenKind = botanist::Token::Kind;
+using namespace botanist;
+using TokenKind = Token::Kind;
 
 int main(int argc, char const* argv[]) {
     // 対象の式は実行引数経由で渡されることを想定
@@ -23,9 +26,9 @@ int main(int argc, char const* argv[]) {
 
     // トークナイザに渡す
     std::cout << "Tokenize..." << std::endl;
-    collection2::Node<botanist::Token> tokenPool[64];
-    collection2::List<botanist::Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
-    botanist::Tokenizer tokenizer(tokenList);
+    collection2::Node<Token> tokenPool[64];
+    collection2::List<Token> tokenList(tokenPool, sizeof(tokenPool) / sizeof(tokenPool[0]));
+    Tokenizer tokenizer(tokenList);
     auto tokenizationResult = tokenizer.tokenize(formula);
     if (tokenizationResult != 0) {
         for (size_t i = 0; i < tokenizationResult - 1; i++) {
@@ -39,25 +42,31 @@ int main(int argc, char const* argv[]) {
 
     // トークンリストを構文木に変換
     std::cout << "Analyse..." << std::endl;
-    botanist::Analyser analyser(tokenList);
+    collection2::TreeNode<SyntaxNode> nodePool[16];
+    collection2::Tree<SyntaxNode> syntaxTree(nodePool, sizeof(nodePool) / sizeof(nodePool[0]));
+    Analyser analyser(tokenList, syntaxTree);
     auto analysisResult = analyser.analyse();
     if (analysisResult != 0) {
         std::cerr << "Analyse failed: " << analysisResult << std::endl;
         return 1;
     }
-    botanist::SyntaxNode* rootNode = analyser.rootNode();
-    analyser.dumpSyntaxTree(rootNode);
+    const auto* rootNode = analyser.rootNode();
+    analyser.dumpSyntaxTree();
 
     // 構文木を直列化し、スタックマシンで動かせるレベルまで持っていく
     std::cout << "Serialize..." << std::endl;
-    botanist::Serializer serializer;
-    auto* serializedNode = serializer.serializeTree(rootNode);
+    Node<SyntaxNode> syntaxNodePool[64];
+    List<SyntaxNode> syntaxNodeList(syntaxNodePool, sizeof(syntaxNodePool) / sizeof(syntaxNodePool[0]));
+    Serializer serializer(syntaxNodeList);
+    serializer.serializeTree(rootNode);
     serializer.dumpSeralizedNodeList();
 
     // 評価器に渡す
     std::cout << "Evaluate..." << std::endl;
-    botanist::DoubleEvaluator evaluator;
-    double calculationResult = evaluator.evaluate(serializedNode);
+    double calcStackPool[64];
+    Stack<double> calcStack(calcStackPool, sizeof(calcStackPool) / sizeof(calcStackPool[0]));
+    DoubleEvaluator evaluator(calcStack);
+    double calculationResult = evaluator.evaluate(syntaxNodeList);
     std::cout << "ans = " << calculationResult << std::endl;
 
     return 0;

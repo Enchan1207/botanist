@@ -31,7 +31,7 @@ size_t Analyser::analyse() {
     return 0;
 }
 
-SyntaxNode* Analyser::expression() {
+collection2::TreeNode<SyntaxNode>* Analyser::expression() {
     auto* node = unary();
 
     bool canLoopContinue = true;
@@ -70,7 +70,7 @@ SyntaxNode* Analyser::expression() {
     return node;
 }
 
-SyntaxNode* Analyser::unary() {
+collection2::TreeNode<SyntaxNode>* Analyser::unary() {
     auto* node = factor();
 
     bool canLoopContinue = true;
@@ -109,7 +109,7 @@ SyntaxNode* Analyser::unary() {
     return node;
 }
 
-SyntaxNode* Analyser::factor() {
+collection2::TreeNode<SyntaxNode>* Analyser::factor() {
     if (forward("(", 1)) {
         auto* node = expression();
 

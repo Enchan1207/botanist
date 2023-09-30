@@ -6,16 +6,16 @@
 
 namespace botanist {
 
-bool DoubleEvaluator::getValueFromNode(const SyntaxNode* node, double& value) const {
+bool DoubleEvaluator::getValueFromNode(const SyntaxNode& node, double& value) const {
     // 数値ノードを期待する
-    if (node == nullptr || node->kind != SyntaxNode::Kind::Number) {
+    if (node.kind != SyntaxNode::Kind::Number) {
         return false;
     }
 
     // 文字列を取り出す
-    char contentStr[node->length + 1];
-    memset(contentStr, '\0', node->length + 1);
-    memcpy(contentStr, node->content, node->length);
+    char contentStr[node.length + 1];
+    memset(contentStr, '\0', node.length + 1);
+    memcpy(contentStr, node.content, node.length);
 
     // strtodに渡す
     const char* contentStrConst = contentStr;
@@ -28,10 +28,10 @@ bool DoubleEvaluator::getValueFromNode(const SyntaxNode* node, double& value) co
     return true;
 }
 
-double DoubleEvaluator::evaluate(collection2::Node<SyntaxNode*>* node) {
-    auto* currentNode = node;
+double DoubleEvaluator::evaluate(collection2::List<SyntaxNode>& nodeList) {
+    auto* currentNode = nodeList.head();
     while (currentNode != nullptr) {
-        const auto* syntaxNode = currentNode->element;
+        const auto syntaxNode = currentNode->element;
 
         // 数値ならスタックにpush
         double value = 0;
@@ -48,7 +48,7 @@ double DoubleEvaluator::evaluate(collection2::Node<SyntaxNode*>* node) {
         calcStack.pop(&lhs);
 
         // 計算して積む
-        switch (syntaxNode->kind) {
+        switch (syntaxNode.kind) {
             case SyntaxNode::Kind::Add:
                 calcStack.push(lhs + rhs);
                 break;
