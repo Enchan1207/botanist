@@ -12,41 +12,47 @@
 
 namespace botanist {
 
-void Analyser::dumpSyntaxTree(SyntaxNodeOld* node) const {
+void Analyser::dumpSyntaxTree() const {
+    if (root == nullptr) {
+        std::cout << "rootnode not found." << std::endl;
+        return;
+    }
     std::cout << "flowchart TD" << std::endl;
-    dumpSyntaxNode(node);
+    dumpSyntaxNode(root);
 }
 
-void Analyser::dumpSyntaxNode(SyntaxNodeOld* node) const {
+void Analyser::dumpSyntaxNode(collection2::TreeNode<botanist::SyntaxNode> *nodePtr) const {
+    const auto &node = nodePtr->element;
+
     // アドレスを取得しておく
-    auto nodeAddress = static_cast<const void*>(node);
+    auto nodeAddress = static_cast<const void *>(nodePtr);
     std::stringstream nodeAddressStream;
     nodeAddressStream << nodeAddress;
     std::string addressStr = nodeAddressStream.str();
 
     // ノードの内容を出力
-    char identifierBuffer[node->length + 1];
-    memset(identifierBuffer, '\0', node->length + 1);
+    char identifierBuffer[node.length + 1];
+    memset(identifierBuffer, '\0', node.length + 1);
     std::cout << "  " << addressStr << "[";
-    switch (node->kind) {
-        case SyntaxNodeOld::Kind::Number:
-            memcpy(identifierBuffer, node->content, node->length);
+    switch (node.kind) {
+        case SyntaxNode::Kind::Number:
+            memcpy(identifierBuffer, node.content, node.length);
             std::cout << identifierBuffer;
             break;
 
-        case SyntaxNodeOld::Kind::Add:
+        case SyntaxNode::Kind::Add:
             std::cout << "+";
             break;
 
-        case SyntaxNodeOld::Kind::Subtract:
+        case SyntaxNode::Kind::Subtract:
             std::cout << "-";
             break;
 
-        case SyntaxNodeOld::Kind::Multiply:
+        case SyntaxNode::Kind::Multiply:
             std::cout << "*";
             break;
 
-        case SyntaxNodeOld::Kind::Divide:
+        case SyntaxNode::Kind::Divide:
             std::cout << "\"/\"";
             break;
 
@@ -56,10 +62,10 @@ void Analyser::dumpSyntaxNode(SyntaxNodeOld* node) const {
     std::cout << "]" << std::endl;
 
     // ノードの接続関係を説明
-    if (node->lhs != nullptr) {
-        dumpSyntaxNode(node->lhs);
+    if (nodePtr->lhs != nullptr) {
+        dumpSyntaxNode(nodePtr->lhs);
 
-        auto lhsNodeAddress = static_cast<const void*>(node->lhs);
+        auto lhsNodeAddress = static_cast<const void *>(nodePtr->lhs);
         std::stringstream lhsNodeAddressStream;
         lhsNodeAddressStream << lhsNodeAddress;
         std::string lhsNodeAddressStr = lhsNodeAddressStream.str();
@@ -67,10 +73,10 @@ void Analyser::dumpSyntaxNode(SyntaxNodeOld* node) const {
         std::cout << "  " << addressStr << " --> " << lhsNodeAddressStr << std::endl;
     }
 
-    if (node->rhs != nullptr) {
-        dumpSyntaxNode(node->rhs);
+    if (nodePtr->rhs != nullptr) {
+        dumpSyntaxNode(nodePtr->rhs);
 
-        auto rhsNodeAddress = static_cast<const void*>(node->rhs);
+        auto rhsNodeAddress = static_cast<const void *>(nodePtr->rhs);
         std::stringstream rhsNodeAddressStream;
         rhsNodeAddressStream << rhsNodeAddress;
         std::string rhsNodeAddressStr = rhsNodeAddressStream.str();

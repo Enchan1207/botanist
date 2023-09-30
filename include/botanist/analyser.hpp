@@ -154,21 +154,20 @@ class Analyser final {
 
     /**
      * @brief 構文木をダンプ
-     *
-     * @param node 対象のノード
+     * @note ルートノードがない場合ダンプは実行されません。
      */
-    void dumpSyntaxTree(SyntaxNodeOld* node) const;
+    void dumpSyntaxTree() const;
 
     /**
      * @brief 構文ノードをダンプ
      *
-     * @param node 対象のノード
+     * @param nodePtr 対象のノードへのポインタ
      */
-    void dumpSyntaxNode(SyntaxNodeOld* node) const;
+    void dumpSyntaxNode(collection2::TreeNode<botanist::SyntaxNode>* nodePtr) const;
 
 #else
-    void dumpSyntaxTree(SyntaxNodeOld* node) const = delete;
-    void dumpSyntaxNode(SyntaxNodeOld* node) const = delete;
+    void dumpSyntaxTree() const = delete;
+    void dumpSyntaxNode(collection2::TreeNode<botanist::SyntaxNode>* nodePtr) const = delete;
 #endif
 };
 

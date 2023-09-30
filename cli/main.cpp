@@ -51,7 +51,7 @@ int main(int argc, char const* argv[]) {
         return 1;
     }
     const auto* rootNode = analyser.rootNode();
-    // analyser.dumpSyntaxTree(rootNode);
+    analyser.dumpSyntaxTree();
 
     // 構文木を直列化し、スタックマシンで動かせるレベルまで持っていく
     std::cout << "Serialize..." << std::endl;
@@ -59,7 +59,7 @@ int main(int argc, char const* argv[]) {
     List<SyntaxNode> syntaxNodeList(syntaxNodePool, sizeof(syntaxNodePool) / sizeof(syntaxNodePool[0]));
     Serializer serializer(syntaxNodeList);
     serializer.serializeTree(rootNode);
-    // serializer.dumpSeralizedNodeList();
+    serializer.dumpSeralizedNodeList();
 
     // 評価器に渡す
     std::cout << "Evaluate..." << std::endl;
