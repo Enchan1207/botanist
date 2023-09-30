@@ -1,7 +1,7 @@
 #
-# test using QEMU
+# unit testing
 #
-name: unittest on AVR (emulated by QEMU)
+name: unittest
 
 on:
   push:
@@ -10,7 +10,26 @@ on:
     branches: ["master"]
 
 jobs:
-  unittest:
+  unittest-pc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DFORMULA_PARSER_BUILD_TESTS=ON
+      - name: Build
+        working-directory: ${{github.workspace}}/build
+        run: cmake --build .
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest
+
+  unittest-avr:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

@@ -1,0 +1,62 @@
+name: Doxygen
+
+on:
+  workflow_run:
+    workflows:
+      - unittest
+    branches:
+      - master
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Git setup
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+      - name: Switch branch to gh-pages for GitHub Pages and pull if remote exists
+        run: |
+          git checkout --orphan gh-pages
+          git rm -rf .
+          git fetch origin gh-pages && isRemoteExists=1 || isRemoteExists=0
+          if [ $isRemoteExists -eq 1 ]; then
+            git pull origin gh-pages
+          fi
+          git switch master
+
+      - name: Generate document using Doxygen
+        uses: mattnotmitt/doxygen-action@v1.9.5
+
+      - name: Change permisson of generated document files
+        run: sudo chown -R runner:docker docs
+
+      - name: Migrate document files
+        run: |
+          mv docs docs_
+          git branch --list | grep gh-pages && isLocalExists=1 || isLocalExists=0
+          if [ $isLocalExists -eq 1 ]; then
+            git switch gh-pages
+          else
+            git checkout --orphan gh-pages
+          fi
+          git rm -rf .
+          mkdir -p docs
+          cp -rf docs_/* docs
+          rm -rf docs_
+
+      - name: Add files for GitHub pages, then commit and push
+        run: |
+          git add docs
+          if [ ! -e .nojekyll ]; then
+            touch .nojekyll
+            git add .nojekyll
+          fi
+          git diff --quiet && git diff --staged --quiet || git commit -am "[Update] documents"
+          git push origin gh-pages

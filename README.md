@@ -4,7 +4,7 @@
 
 ## Overview
 
-Parse and evaluate formula
+Arithmetric formula parser and evaluator for embedded systems
 
 ## License
 
