@@ -1,6 +1,6 @@
-# Home {#mainpage}
+# botanist documentation {#mainpage}
 
-\tableofcontents{html}
+<img style="width:100%;" src="https://raw.githubusercontent.com/Enchan1207/botanist/master/banner.png">
 
 botanistは、組み込みシステム向けに最適化された数式パーサと評価器を提供するライブラリです。
 
@@ -16,7 +16,7 @@ botanistは、組み込みシステム向けに最適化された数式パーサ
     - C++11でコンパイルしています。
     - 動的メモリ割当て (`malloc`, `new` 等) を使用していません。
     - 例外 (`try`, `throw`) を使用していません。
-    - STLに依存しません (コレクションライブラリには[botanist](https://github.com/Enchan1207/botanist)を採用しています)。
+    - STLに依存しません (コレクションライブラリには[collection2](https://github.com/Enchan1207/collection2)を採用しています)。
     - **全てのテストケースがAVRマイコン(atmega328p, atmega2560)でパスすることを(QEMUによるエミュレーションにより)確認しています。**
 
 ### Specification
